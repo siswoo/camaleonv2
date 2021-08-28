@@ -101,11 +101,36 @@ $proceso4 = mysqli_query($conexion,$sql4);
 while($row4 = mysqli_fetch_array($proceso4)) {
 	//$usuario_nombre = $row4["nombre1"]." ".$row4["nombre2"]." ".$row4["apellido1"]." ".$row4["apellido2"];
 	$usuario_nombre = strtoupper($row4["nombre1"]);
+	$genero = $row4["genero"];
+	$sql5 = "SELECT * FROM genero WHERE id = ".$genero;
+	$proceso5 = mysqli_query($conexion,$sql5);
+	while($row5 = mysqli_fetch_array($proceso5)) {
+		$genero_nombre = $row5["nombre"];
+	}
 }
 
 echo '
 		<li class="nav-item dropdown">
-			<a class="nav-link dropdown-toggle" style="font-size:23px; color: white;" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img src="../img/otros/avatar1.jpg" style="width:35px; border-radius:1rem; margin-right: 5px;">'.$usuario_nombre.' </a>
+			<a class="nav-link dropdown-toggle" style="font-size:23px; color: white;" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+';
+
+if($genero_nombre=='Hombre'){
+	echo '
+		<img src="../img/otros/avatar1.jpg" style="width:35px; border-radius:1rem; margin-right: 5px;">
+	';	
+}else if($genero_nombre=='Mujer'){
+	echo '
+		<img src="../img/otros/avatar2.png" style="width:35px; border-radius:1rem; margin-right: 5px;">
+	';	
+}else{
+	echo '
+		<img src="../img/otros/avatar1.jpg" style="width:35px; border-radius:1rem; margin-right: 5px;">
+	';	
+}
+
+echo '
+				'.$usuario_nombre.' 
+			</a>
 			<ul class="dropdown-menu">
 				<li>
 					<a class="dropdown-item" style="font-size:22px; font-weight: bold;" href="../cerrar_sesion.php">Cerrar Sesión</a>

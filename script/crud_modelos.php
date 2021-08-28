@@ -264,11 +264,32 @@ if($condicion=='table1'){
 		                    <td style="text-align:center;">'.$row2["sede"].'</td>
 		                    <td nowrap="nowrap">'.$row2["fecha_creacion"].'</td>
 		                    <td class="text-center" nowrap="nowrap">
-					    		<button type="button" class="btn btn-success" data-toggle="modal" data-target="#solicitar1" onclick="solicitar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Solicitar</button>
-		    		 		</td>
-		    		 	</tr>
-		    ';
+			';
 
+			if($row2["modelo_estatus"]==1){
+				$html .= '
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#modificar1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Editar</button>
+								<button type="button" class="btn btn-success" onclick="aceptar1('.$row2["usuario_id"].');">A</button>
+								<button type="button" class="btn btn-danger" onclick="rechazar1('.$row2["usuario_id"].');">R</button>
+								<!--
+								<button type="button" class="btn btn-success" data-toggle="modal" data-target="#solicitar1" onclick="solicitar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Solicitar</button>
+								-->
+				';
+			}else if($row2["modelo_estatus"]==2){
+				$html .= '
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#modificar1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Editar</button>
+								<button type="button" class="btn btn-danger" onclick="rechazar1('.$row2["usuario_id"].');">Rechazar</button>
+				';
+			}else if($row2["modelo_estatus"]==3){
+				$html .= '
+							<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#modificar1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Editar</button>
+								<button type="button" class="btn btn-success" onclick="aceptar1('.$row2["usuario_id"].');">Aceptar</button>
+				';
+			}
+		    
+		    $html .= '		</td>
+		    			</tr>
+		    ';
 		}
 	}else{
 		$html .= '<tr><td colspan="10" class="text-center" style="font-weight:bold;font-size:20px;">Sin Resultados</td></tr>';
@@ -1429,6 +1450,70 @@ if($condicion=="modelos_cuentas_estatus1"){
 	$datos = [
 		"resultado" => "ok",
 	];
+
+	echo json_encode($datos);
+}
+
+if($condicion=='consulta1'){
+	$usuario_id = $_POST["usuario_id"];
+
+	$sql1 = "SELECT us.nombre1 as nombre1, us.nombre2 as nombre2, us.apellido1 as apellido1, us.apellido2 as apellido2, us.documento_tipo as documento_tipo, dti.nombre as documento_tipo_nombre, us.documento_numero as documento_numero, us.correo_personal as correo_personal, us.telefono as telefono, us.genero as genero, us.direccion as direccion, us.id_pais as id_pais, pa.nombre as pais_nombre, dmo.id as modelo_id, dmo.fecha_creacion as fecha_creacion, dmo.sede as sede, dmo.estatus as estatus, dmo.turno as turno, se.nombre as sede_nombre FROM usuarios us 
+	INNER JOIN datos_modelos dmo 
+	ON us.id = dmo.id_usuarios 
+	INNER JOIN documento_tipo dti 
+	ON us.documento_tipo = dti.id 
+	INNER JOIN genero ge 
+	ON us.genero = ge.id 
+	INNER JOIN paises pa 
+	ON us.id_pais = pa.id 
+	INNER JOIN sedes se 
+	ON dmo.sede = se.id 
+	WHERE us.id = ".$usuario_id;
+	$consulta1 = mysqli_query($conexion,$sql1);
+	while($row1 = mysqli_fetch_array($consulta1)) {
+		$nombre1 = $row1["nombre1"];
+		$nombre2 = $row1["nombre2"];
+		$apellido1 = $row1["apellido1"];
+		$apellido2 = $row1["apellido2"];
+		$documento_tipo = $row1["documento_tipo"];
+		$documento_tipo_nombre = $row1["documento_tipo_nombre"];
+		$documento_numero = $row1["documento_numero"];
+		$correo_personal = $row1["correo_personal"];
+		$telefono = $row1["telefono"];
+		$genero = $row1["genero"];
+		$direccion = $row1["direccion"];
+		$id_pais = $row1["id_pais"];
+		$pais_nombre = $row1["pais_nombre"];
+		$modelo_id = $row1["modelo_id"];
+		$fecha_creacion = $row1["fecha_creacion"];
+		$sede = $row1["sede"];
+		$estatus = $row1["estatus"];
+		$turno = $row1["turno"];
+		$sede_nombre = $row1["sede_nombre"];
+	}
+
+	$datos = [
+			"estatus"	=> "ok",
+			"sql1"	=> $sql1,
+			"nombre1"	=> $nombre1,
+			"nombre2"	=> $nombre2,
+			"apellido1"	=> $apellido1,
+			"apellido2"	=> $apellido2,
+			"documento_tipo"	=> $documento_tipo,
+			"documento_tipo_nombre"	=> $documento_tipo_nombre,
+			"documento_numero"	=> $documento_numero,
+			"correo_personal"	=> $correo_personal,
+			"telefono"	=> $telefono,
+			"genero"	=> $genero,
+			"direccion"	=> $direccion,
+			"id_pais"	=> $id_pais,
+			"pais_nombre"	=> $pais_nombre,
+			"modelo_id"	=> $modelo_id,
+			"fecha_creacion"	=> $fecha_creacion,
+			"sede"	=> $sede,
+			"turno"	=> $turno,
+			"sede_nombre"	=> $sede_nombre,
+		];
 
 	echo json_encode($datos);
 }

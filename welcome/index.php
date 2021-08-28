@@ -32,10 +32,10 @@ include("../header.php");
 ?>
 
 <div class="row">
-	<div class="col-4 col-sm-4 col-md-4 col-lg-4 col-xl-4 text-left banner_app_izquierda1" style="margin-left: -1px;">
+	<div class="col-3 col-sm-3 col-md-3 col-lg-3 col-xl-3 text-left banner_app_izquierda1" style="margin-left: -1px;">
 		<img class="img-fluid" src="../img/banner/banner_app_izquierda1.png">
 	</div>
-	<div class="col-12 col-sm-12 col-md-12 col-lg-8 col-xl-8">
+	<div class="col-12 col-sm-12 col-md-12 col-lg-9 col-xl-9">
 		<div class="row">
 			<div class="col-12 col-sm-12 col-md-12 col-lg-6 col-xl-6 mt-3">
 				<div class="card">
