@@ -7,6 +7,7 @@ require '../resources/PHPMailer/PHPMailer/src/PHPMailer.php';
 require '../resources/PHPMailer/PHPMailer/src/SMTP.php';
 include('conexion.php');
 include('conexion2.php');
+include('../js/funciones1.php');
 $condicion = $_POST["condicion"];
 $datetime = date('Y-m-d H:i:s');
 $empresa = $_SESSION["camaleonapp_empresa"];
@@ -118,6 +119,7 @@ if($condicion=='table1'){
 	$filtrado = $_POST["filtrado"];
 	$link1 = $_POST["link1"];
 	$sede = $_POST["sede"];
+	$m_estatus = $_POST["m_estatus"];
 	$link1 = explode("/",$link1);
 	$link1 = $link1[3];
 
@@ -135,6 +137,10 @@ if($condicion=='table1'){
 
 	if($sede!=''){
 		$sede = ' and (mo.sede = '.$sede.') ';
+	}
+
+	if($m_estatus!=''){
+		$m_estatus = " and (mo.estatus = ".$m_estatus.")";
 	}
 
 	$limit = $consultasporpagina;
@@ -175,7 +181,8 @@ if($condicion=='table1'){
 		ON pa.id = us.id_pais
 		WHERE us.id != 0 
 		".$filtrado." 
-		".$sede." 
+		".$sede."
+		".$m_estatus." 
 	";
 	
 	$sql2 = "SELECT 
@@ -214,7 +221,8 @@ if($condicion=='table1'){
 		WHERE us.id != 0 
 		".$filtrado." 
 		".$sede." 
-		ORDER BY mo.fecha_creacion DESC LIMIT ".$limit." OFFSET ".$offset."
+		".$m_estatus." 
+		ORDER BY mo.id DESC LIMIT ".$limit." OFFSET ".$offset."
 	";
 
 	$proceso1 = mysqli_query($conexion,$sql1);
@@ -233,7 +241,7 @@ if($condicion=='table1'){
 	                <th class="text-center">N Doc</th>
 	                <th class="text-center">Nombre</th>
 	                <th class="text-center">Género</th>
-	                <th class="text-center">Correo</th>
+	                <!--<th class="text-center">Correo</th>-->
 	                <th class="text-center">Teléfono</th>
 	                <th class="text-center">Estatus</th>
 	                <th class="text-center">Sede</th>
@@ -258,31 +266,37 @@ if($condicion=='table1'){
 		                    <td style="text-align:center;">'.$row2["documento_numero"].'</td>
 		                    <td>'.$row2["nombre1"]." ".$row2["nombre2"]." ".$row2["apellido1"]." ".$row2["apellido2"].'</td>
 		                    <td style="text-align:center;">'.$row2["genero"].'</td>
-		                    <td style="text-align:center;">'.$row2["correo"].'</td>
+		                    <!--<td style="text-align:center;">'.$row2["correo"].'</td>-->
 		                    <td style="text-align:center;">'.$row2["telefono"].'</td>
 		                    <td  style="text-align:center;">'.$modelo_estatus.'</td>
 		                    <td style="text-align:center;">'.$row2["sede"].'</td>
 		                    <td nowrap="nowrap">'.$row2["fecha_creacion"].'</td>
 		                    <td class="text-center" nowrap="nowrap">
+		                    	<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#personales1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-user-edit"></i></button>
+		                    	<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#emergencia1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-first-aid"></i></button>
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#corporales1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-child"></i></button>
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#documentos1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="far fa-folder-open"></i></button>
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#fotos1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-images"></i></button>
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#bancarios1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-money-check-alt"></i></button>
+								<!--
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#modificar1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="far fa-user"></i></button>
+								-->
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#empresa1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="far fa-building"></i></button>
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#subirdocumentos1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-cloud-upload-alt"></i></button>
 			';
 
 			if($row2["modelo_estatus"]==1){
 				$html .= '
-								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#modificar1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Editar</button>
 								<button type="button" class="btn btn-success" onclick="aceptar1('.$row2["usuario_id"].');">A</button>
 								<button type="button" class="btn btn-danger" onclick="rechazar1('.$row2["usuario_id"].');">R</button>
-								<!--
-								<button type="button" class="btn btn-success" data-toggle="modal" data-target="#solicitar1" onclick="solicitar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Solicitar</button>
-								-->
 				';
 			}else if($row2["modelo_estatus"]==2){
 				$html .= '
-								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#modificar1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Editar</button>
 								<button type="button" class="btn btn-danger" onclick="rechazar1('.$row2["usuario_id"].');">Rechazar</button>
 				';
 			}else if($row2["modelo_estatus"]==3){
 				$html .= '
-							<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#modificar1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Editar</button>
+
 								<button type="button" class="btn btn-success" onclick="aceptar1('.$row2["usuario_id"].');">Aceptar</button>
 				';
 			}
@@ -452,6 +466,7 @@ if($condicion=='table2'){
 	$filtrado = $_POST["filtrado"];
 	$link1 = $_POST["link1"];
 	$sede = $_POST["sede"];
+	$m_estatus = $_POST["m_estatus"];
 	$link1 = explode("/",$link1);
 	$link1 = $link1[3];
 
@@ -469,6 +484,10 @@ if($condicion=='table2'){
 
 	if($sede!=''){
 		$sede = ' and (mo.sede = '.$sede.') ';
+	}
+
+	if($m_estatus!=''){
+		$m_estatus = " and (mo.estatus = ".$m_estatus.")";
 	}
 
 	$limit = $consultasporpagina;
@@ -509,7 +528,8 @@ if($condicion=='table2'){
 		ON pa.id = us.id_pais
 		WHERE us.id != 0 
 		".$filtrado." 
-		".$sede." 
+		".$sede."
+		".$m_estatus." 
 	";
 	
 	$sql2 = "SELECT 
@@ -548,7 +568,8 @@ if($condicion=='table2'){
 		WHERE us.id != 0 
 		".$filtrado." 
 		".$sede." 
-		ORDER BY mo.fecha_creacion DESC LIMIT ".$limit." OFFSET ".$offset."
+		".$m_estatus." 
+		ORDER BY mo.id DESC LIMIT ".$limit." OFFSET ".$offset."
 	";
 
 	$proceso1 = mysqli_query($conexion,$sql1);
@@ -567,7 +588,7 @@ if($condicion=='table2'){
 	                <th class="text-center">N Doc</th>
 	                <th class="text-center">Nombre</th>
 	                <th class="text-center">Género</th>
-	                <th class="text-center">Correo</th>
+	                <!--<th class="text-center">Correo</th>-->
 	                <th class="text-center">Teléfono</th>
 	                <th class="text-center">Estatus</th>
 	                <th class="text-center">Sede</th>
@@ -586,33 +607,27 @@ if($condicion=='table2'){
 			}else if($row2["modelo_estatus"]==3){
 				$modelo_estatus = "Rechazado";
 			}
-
-			$sql3 = "SELECT * FROM modelos_cuentas WHERE id_usuarios = ".$row2["modelo_id"];
-			$proceso3 = mysqli_query($conexion,$sql3);
-			$contador3 = mysqli_num_rows($proceso3);
-
 			$html .= '
 		                <tr id="tr_'.$row2["modelo_id"].'">
 		                    <td style="text-align:center;">'.$row2["documento_tipo"].'</td>
 		                    <td style="text-align:center;">'.$row2["documento_numero"].'</td>
 		                    <td>'.$row2["nombre1"]." ".$row2["nombre2"]." ".$row2["apellido1"]." ".$row2["apellido2"].'</td>
 		                    <td style="text-align:center;">'.$row2["genero"].'</td>
-		                    <td style="text-align:center;">'.$row2["correo"].'</td>
 		                    <td style="text-align:center;">'.$row2["telefono"].'</td>
 		                    <td  style="text-align:center;">'.$modelo_estatus.'</td>
 		                    <td style="text-align:center;">'.$row2["sede"].'</td>
 		                    <td nowrap="nowrap">'.$row2["fecha_creacion"].'</td>
 		                    <td class="text-center" nowrap="nowrap">
-								<i class="fas fa-folder-open" style="cursor:pointer; font-size:20px;" title="" value="'.$row2["usuario_id"].'" data-toggle="modal" data-target="#Modal_documentos1" onclick="documentos1('.$row2["usuario_id"].');"></i>
-								<i class="fas fa-camera-retro" style="cursor:pointer; font-size:20px;" title="" value="'.$row2["usuario_id"].'" data-toggle="modal" data-target="#Modal_fotos1" onclick="fotos1('.$row2["usuario_id"].');"></i>
-								<i class="fas fa-images ml-3" style="cursor:pointer; font-size:20px;" title="" value="'.$row2["usuario_id"].'" data-toggle="modal" data-target="#subir_fotos1" onclick="subir_fotos1('.$row2["usuario_id"].');"></i>
-								<i class="fas fa-user-shield" style="cursor:pointer; font-size:20px;" data-toggle="modal" data-target="#Modal_cuentas1" onclick="cuentas('.$row2["usuario_id"].');"></i>
-							        	<strong>('.$contador3.')</strong>
-								<i class="fas fa-user-plus ml-3" style="cursor:pointer; font-size:20px;" data-toggle="modal" data-target="#Modal_cuentas2" onclick="cuentas2('.$row2["usuario_id"].');"></i>
+		                    	<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#personales1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-user-edit"></i></button>
+		                    	<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#emergencia1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-first-aid"></i></button>
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#corporales1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-child"></i></button>
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#documentos1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="far fa-folder-open"></i></button>
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#fotos1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-images"></i></button>
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#bancarios1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-money-check-alt"></i></button>
+								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#empresa1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="far fa-building"></i></button>
 							</td>
-		    		 	</tr>
-		    ';
-
+		    			</tr>
+			';
 		}
 	}else{
 		$html .= '<tr><td colspan="10" class="text-center" style="font-weight:bold;font-size:20px;">Sin Resultados</td></tr>';
@@ -1046,6 +1061,7 @@ if($condicion=='ver_fotos1'){
 	$html_antecedentes_penales='';
 	$html_extras1='';
 	$html_fotos1='';
+	$html_fotos2='';
 	$modelo_id = $_POST['variable'];
 	$contador_extra1 = 0;
 	$contador_fotos1 = 0;
@@ -1456,8 +1472,12 @@ if($condicion=="modelos_cuentas_estatus1"){
 
 if($condicion=='consulta1'){
 	$usuario_id = $_POST["usuario_id"];
+	$html_documentos1='';
+	$html_fotos1='';
+	$html_fotos2='';
+	$relleno_fotos2='';
 
-	$sql1 = "SELECT us.nombre1 as nombre1, us.nombre2 as nombre2, us.apellido1 as apellido1, us.apellido2 as apellido2, us.documento_tipo as documento_tipo, dti.nombre as documento_tipo_nombre, us.documento_numero as documento_numero, us.correo_personal as correo_personal, us.telefono as telefono, us.genero as genero, us.direccion as direccion, us.id_pais as id_pais, pa.nombre as pais_nombre, dmo.id as modelo_id, dmo.fecha_creacion as fecha_creacion, dmo.sede as sede, dmo.estatus as estatus, dmo.turno as turno, se.nombre as sede_nombre FROM usuarios us 
+	$sql1 = "SELECT us.nombre1 as nombre1, us.nombre2 as nombre2, us.apellido1 as apellido1, us.apellido2 as apellido2, us.documento_tipo as documento_tipo, dti.nombre as documento_tipo_nombre, us.documento_numero as documento_numero, us.correo_personal as correo_personal, us.telefono as telefono, us.genero as genero, us.direccion as direccion, us.id_pais as id_pais, pa.nombre as pais_nombre, dmo.id as modelo_id, dmo.fecha_creacion as fecha_creacion, dmo.sede as sede, dmo.estatus as estatus, dmo.turno as turno, se.nombre as sede_nombre, dmo.altura as altura, dmo.peso as peso, dmo.tpene as tpene, dmo.tsosten as tsosten, dmo.tbusto as tbusto, dmo.tcintura as tcintura, dmo.tcaderas as tcaderas, dmo.tipo_cuerpo as tipo_cuerpo, dmo.pvello as pvello, dmo.color_cabello as color_cabello, dmo.color_ojos as color_ojos, dmo.ptattu as ptattu, dmo.ppiercing as ppiercing, dmo.banco_cedula  as banco_cedula, dmo.banco_nombre as banco_nombre, dmo.banco_tipo as banco_tipo, dmo.banco_numero as banco_numero, dmo.banco_banco as banco_banco, dmo.banco_bcpp as banco_bcpp, dmo.banco_tipo_documento as banco_tipo_documento, dmo.emergencia_nombre as emergencia_nombre, dmo.emergencia_telefono as emergencia_telefono, dmo.emergencia_parentesco as emergencia_parentesco FROM usuarios us 
 	INNER JOIN datos_modelos dmo 
 	ON us.id = dmo.id_usuarios 
 	INNER JOIN documento_tipo dti 
@@ -1490,31 +1510,452 @@ if($condicion=='consulta1'){
 		$estatus = $row1["estatus"];
 		$turno = $row1["turno"];
 		$sede_nombre = $row1["sede_nombre"];
+
+		$altura = $row1["altura"];
+		$peso = $row1["peso"];
+		$pene = $row1["tpene"];
+		$sosten = $row1["tsosten"];
+		$busto = $row1["tbusto"];
+		$cintura = $row1["tcintura"];
+		$caderas = $row1["tcaderas"];
+		$cuerpo = $row1["tipo_cuerpo"];
+		$vello = $row1["pvello"];
+		$cabello = $row1["color_cabello"];
+		$ojos = $row1["color_ojos"];
+		$tattu = $row1["ptattu"];
+		$piercing = $row1["ppiercing"];
+
+		$banco_cedula = $row1["banco_cedula"];
+		$banco_nombre = $row1["banco_nombre"];
+		$banco_tipo = $row1["banco_tipo"];
+		$banco_numero = $row1["banco_numero"];
+		$banco_banco = $row1["banco_banco"];
+		$banco_bcpp = $row1["banco_bcpp"];
+		$banco_tipo_documento = $row1["banco_tipo_documento"];
+
+		$emergencia_nombre = $row1["emergencia_nombre"];
+		$emergencia_telefono = $row1["emergencia_telefono"];
+		$emergencia_parentesco = $row1["emergencia_parentesco"];
+
+		$sql2 = "SELECT * FROM modelos_documentos WHERE (id_documentos = 1 or id_documentos = 2 or id_documentos = 3 or id_documentos = 4 or id_documentos = 5 or id_documentos = 6 or id_documentos = 7 or id_documentos = 8 or id_documentos = 9 or id_documentos = 10 or id_documentos = 11 or id_documentos = 14) and id_usuarios = ".$usuario_id;
+		$proceso2 = mysqli_query($conexion,$sql2);
+		$contador2 = mysqli_num_rows($proceso2);
+		if($contador2>=1){
+			while($row2 = mysqli_fetch_array($proceso2)) {
+				$modelos_documentos_id = $row2['id'];
+				$id_documento = $row2['id_documentos'];
+				$modelos_documentos_tipo = $row2['tipo'];
+
+				$sql3 = "SELECT * FROM documentos WHERE id = ".$id_documento;
+				$proceso3 = mysqli_query($conexion,$sql3);
+				while($row3 = mysqli_fetch_array($proceso3)) {
+					$documento_nombre = $row3["nombre"];
+					$documento_ruta = $row3["ruta"];
+				}
+
+				if($modelos_documentos_tipo=='pdf' or $modelos_documentos_tipo=='PDF'){
+					$html_documentos1 .= '
+						<div class="col-12 form-group text-center" id="divmacro_documento_'.$modelos_documentos_id.'">
+							<p>
+								<button type="button" id="documento_'.$modelos_documentos_id.'" value="1" onclick="documento_mostrar1(this.id,value);" class="btn btn-info">Ver '.$documento_nombre.'</button>
+							</p>
+							<embed id="div_documento_'.$modelos_documentos_id.'" src="../resources/documentos/modelos/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$modelos_documentos_tipo.'" type="application/pdf" width="100%" height="300px" style="display: none;">
+							<hr style="background-color:black;">
+						</div>
+					';
+				}else{
+					$html_documentos1 .= '
+						<div class="col-12 form-group text-center">
+							<p>'.$documento_nombre.'</p>
+							<img id="div_documento1" src="../resources/documentos/modelos/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+							<hr style="background-color:black;">
+						</div>
+					';
+				}
+
+			}
+		}else if($contador2==0){
+			$html_documentos1 = '
+				<div class="col-12 form-group text-center">
+					<div><label for="" style="text-transform: capitalize;">Sin Documentos cargados</label></div>
+					<hr style="background-color:black;">
+				</div>
+			';
+		}
+
+		$sql4 = "SELECT * FROM modelos_documentos WHERE (id_documentos = 12 or id_documentos = 13) and id_usuarios = ".$usuario_id;
+		$proceso4 = mysqli_query($conexion,$sql4);
+		$contador4 = mysqli_num_rows($proceso4);
+		if($contador4>=1){
+			while($row2 = mysqli_fetch_array($proceso4)) {
+				$modelos_documentos_id = $row2['id'];
+				$id_documento = $row2['id_documentos'];
+				$modelos_documentos_tipo = $row2['tipo'];
+
+				$sql3 = "SELECT * FROM documentos WHERE id = ".$id_documento;
+				$proceso3 = mysqli_query($conexion,$sql3);
+				while($row3 = mysqli_fetch_array($proceso3)) {
+					$documento_nombre = $row3["nombre"];
+					$documento_ruta = $row3["ruta"];
+				}
+
+				$html_fotos1 .= '
+					<div class="col-12 form-group text-center">
+						<p>'.$documento_nombre.'</p>
+						<img id="div_documento1" src="../resources/documentos/modelos/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+						<hr style="background-color:black;">
+					</div>
+				';
+			}
+
+			$relleno_fotos2 = '
+				<div class="col-12 text-center">
+					<img id="div_documento1" src="../resources/documentos/modelos/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+					<hr style="background-color:black;">
+				</div>
+			';
+
+		}else if($contador4==0){
+			$html_fotos1 = '
+				<div class="col-12 form-group text-center">
+					<div><label for="" style="text-transform: capitalize;">No tiene Registro de Fotos</label></div>
+					<hr style="background-color:black;">
+				</div>
+			';
+		}
+	}
+
+	if($contador4<=4){
+		$cupo_fotos2 = 5-$contador4;
+		$html_fotos2 = '
+			<div class="col-12 text-center" style="font-weight: bold;">
+				<hr style="background-color:black;">
+				REGISTRAR FOTOS SENSUALES 
+				<p>(Le faltan '.$cupo_fotos2.')</p>
+			</div>
+			<div class="col-12 text-center" style="font-weight: bold;">
+				<input type="file" class="form-control" name="subirdocumentos1_foto1" id="subirdocumentos1_foto1" style="margin-left: 18px; margin-right: 16px;" required>
+				<hr style="background-color:black;">
+			</div>
+		';
+
 	}
 
 	$datos = [
-			"estatus"	=> "ok",
-			"sql1"	=> $sql1,
-			"nombre1"	=> $nombre1,
-			"nombre2"	=> $nombre2,
-			"apellido1"	=> $apellido1,
-			"apellido2"	=> $apellido2,
-			"documento_tipo"	=> $documento_tipo,
-			"documento_tipo_nombre"	=> $documento_tipo_nombre,
-			"documento_numero"	=> $documento_numero,
-			"correo_personal"	=> $correo_personal,
-			"telefono"	=> $telefono,
-			"genero"	=> $genero,
-			"direccion"	=> $direccion,
-			"id_pais"	=> $id_pais,
-			"pais_nombre"	=> $pais_nombre,
-			"modelo_id"	=> $modelo_id,
-			"fecha_creacion"	=> $fecha_creacion,
-			"sede"	=> $sede,
-			"turno"	=> $turno,
-			"sede_nombre"	=> $sede_nombre,
-		];
+		"estatus"	=> "ok",
+		"sql1"	=> $sql1,
+		"nombre1"	=> $nombre1,
+		"nombre2"	=> $nombre2,
+		"apellido1"	=> $apellido1,
+		"apellido2"	=> $apellido2,
+		"documento_tipo"	=> $documento_tipo,
+		"documento_tipo_nombre"	=> $documento_tipo_nombre,
+		"documento_numero"	=> $documento_numero,
+		"correo_personal"	=> $correo_personal,
+		"telefono"	=> $telefono,
+		"genero"	=> $genero,
+		"direccion"	=> $direccion,
+		"id_pais"	=> $id_pais,
+		"pais_nombre"	=> $pais_nombre,
+		"modelo_id"	=> $modelo_id,
+		"fecha_creacion"	=> $fecha_creacion,
 
+		"altura" => $altura,
+		"peso" => $peso,
+		"pene" => $pene,
+		"sosten" => $sosten,
+		"busto" => $busto,
+		"cintura" => $cintura,
+		"caderas" => $caderas,
+		"cuerpo" => $cuerpo,
+		"vello" => $vello,
+		"cabello" => $cabello,
+		"ojos" => $ojos,
+		"tattu" => $tattu,
+		"piercing" => $piercing,
+
+		"sede"	=> $sede,
+		"turno"	=> $turno,
+		"sede_nombre"	=> $sede_nombre,
+
+		"html_documentos1" => $html_documentos1,
+		"html_fotos1" => $html_fotos1,
+		"html_fotos2" => $html_fotos2,
+
+		"banco_cedula"	=> $banco_cedula,
+		"banco_nombre"	=> $banco_nombre,
+		"banco_tipo"	=> $banco_tipo,
+		"banco_numero"	=> $banco_numero,
+		"banco_banco"	=> $banco_banco,
+		"banco_bcpp"	=> $banco_bcpp,
+		"banco_tipo_documento"	=> $banco_tipo_documento,
+
+		"emergencia_nombre"	=> $emergencia_nombre,
+		"emergencia_telefono"	=> $emergencia_telefono,
+		"emergencia_parentesco"	=> $emergencia_parentesco,
+	];
+
+	echo json_encode($datos);
+}
+
+if($condicion=='aceptar_modelos1'){
+	$usuario_id = $_POST["usuario_id"];
+
+	$sql1 = "UPDATE datos_modelos SET estatus = 2 WHERE id_usuarios = ".$usuario_id;
+	$consulta1 = mysqli_query($conexion,$sql1);
+
+	$sql2 = "UPDATE datos_pasantes SET estatus = 2 WHERE id_usuarios = ".$usuario_id;
+	$consulta2 = mysqli_query($conexion,$sql2);
+
+	$datos = [
+		"sql1" 	=> $sql1,
+		"sql2" 	=> $sql2,
+		"estatus" 	=> "ok",
+		"msg" 	=> "Se ha cambiado el estatus ha aceptado!",
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='rechazar_modelos1'){
+	$usuario_id = $_POST["usuario_id"];
+
+	$sql1 = "UPDATE datos_modelos SET estatus = 3 WHERE id_usuarios = ".$usuario_id;
+	$consulta1 = mysqli_query($conexion,$sql1);
+
+	$sql2 = "UPDATE datos_pasantes SET estatus = 3 WHERE id_usuarios = ".$usuario_id;
+	$consulta2 = mysqli_query($conexion,$sql2);
+
+	$datos = [
+		"sql1" 	=> $sql1,
+		"sql2" 	=> $sql2,
+		"estatus" 	=> "ok",
+		"msg" 	=> "Se ha cambiado el estatus ha rechazado!",
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='modificar_personales1'){
+	$usuario_id = $_POST["usuario_id"];
+	$nombre1 = $_POST["nombre1"];
+	$nombre2 = $_POST["nombre2"];
+	$apellido1 = $_POST["apellido1"];
+	$apellido2 = $_POST["apellido2"];
+	$documento_tipo = $_POST["documento_tipo"];
+	$documento_numero = $_POST["documento_numero"];
+	$correo_personal = $_POST["correo"];
+	$telefono = $_POST["telefono"];
+	$genero = $_POST["genero"];
+	$direccion = $_POST["direccion"];
+	$pais = $_POST["pais"];
+
+	$sql1 = "SELECT * FROM usuarios WHERE documento_numero = '".$documento_numero."' and id != ".$usuario_id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+	$contador1 = mysqli_num_rows($proceso1);
+	if($contador1==0){
+		$sql2 = "UPDATE usuarios SET nombre1 = '$nombre1', nombre2 = '$nombre2', apellido1 = '$apellido1', apellido2 = '$apellido2', documento_tipo = '$documento_tipo', documento_numero = '$documento_numero', correo_personal = '$correo_personal', telefono = '$telefono', genero = '$genero', direccion = '$direccion', id_pais = '$pais' WHERE id = ".$usuario_id;
+		$proceso2 = mysqli_query($conexion,$sql2);
+
+		$datos = [
+			"estatus"	=> "ok",
+			"msg"	=> "Se ha modificado correctamente!",
+			"sql1"	=> $sql1,
+			"sql2"	=> $sql2,
+		];
+		echo json_encode($datos);
+	}else{
+		$datos = [
+			"estatus"	=> "error",
+			"msg"	=> "Ya existe un usuario con dicho documento!",
+			"sql1"	=> $sql1,
+		];
+		echo json_encode($datos);
+	}
+}
+
+if($condicion=='modificar_corporales1'){
+	$usuario_id = $_POST["usuario_id"];
+	$altura = $_POST["altura"];
+	$peso = $_POST["peso"];
+	$pene = $_POST["pene"];
+	$sosten = $_POST["sosten"];
+	$busto = $_POST["busto"];
+	$cintura = $_POST["cintura"];
+	$caderas = $_POST["caderas"];
+	$cuerpo = $_POST["cuerpo"];
+	$vello = $_POST["vello"];
+	$cabello = $_POST["cabello"];
+	$ojos = $_POST["ojos"];
+	$tattu = $_POST["tattu"];
+	$piercing = $_POST["piercing"];
+
+	$sql1 = "UPDATE datos_modelos SET altura = '$altura', peso = '$peso', tpene = '$pene', tsosten = '$sosten',tbusto = '$busto', tcintura = '$cintura', tcaderas = '$caderas', tipo_cuerpo = '$cuerpo', pvello = '$vello', color_cabello = '$cabello', color_ojos = '$ojos', ptattu = '$tattu', ppiercing = '$piercing' WHERE id_usuarios = ".$usuario_id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"msg"	=> "Se ha modificado correctamente!",
+		"sql1"	=> $sql1,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='modificar_bancarios1'){
+	$usuario_id = $_POST["usuario_id"];
+	$banco_cedula = $_POST["banco_cedula"];
+	$banco_nombre = $_POST["banco_nombre"];
+	$banco_tipo = $_POST["banco_tipo"];
+	$banco_numero = $_POST["banco_numero"];
+	$banco_banco = $_POST["banco_banco"];
+	$banco_bcpp = $_POST["banco_bcpp"];
+	$banco_tipo_documento = $_POST["banco_tipo_documento"];
+
+	$sql1 = "UPDATE datos_modelos SET banco_cedula = '$banco_cedula', banco_nombre = '$banco_nombre', banco_tipo = '$banco_tipo', banco_numero = '$banco_numero',banco_banco = '$banco_banco', banco_bcpp = '$banco_bcpp', banco_tipo_documento = '$banco_tipo_documento' WHERE id_usuarios = ".$usuario_id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"msg"	=> "Se ha modificado correctamente!",
+		"sql1"	=> $sql1,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='modificar_empresa1'){
+	$usuario_id = $_POST["usuario_id"];
+	$turno = $_POST["turno"];
+	$sede = $_POST["sede"];
+
+	$sql1 = "UPDATE datos_modelos SET turno = '$turno', sede = '$sede' WHERE id_usuarios = ".$usuario_id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"msg"	=> "Se ha modificado correctamente!",
+		"sql1"	=> $sql1,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='subirdocumentos1'){
+	$id_documento = $_POST['id_documento'];
+	$usuario_id = $_POST['usuario_id'];
+	$imagen_temporal = $_FILES['file']['tmp_name'];
+	$imagen_nombre = $_FILES['file']['name'];
+
+	if(file_exists('../resources/documentos/modelos/archivos/'.$usuario_id)){}else{
+	    mkdir('../resources/documentos/modelos/archivos/'.$usuario_id, 0777);
+	}
+
+	$sql1 = "SELECT * FROM documentos WHERE id = ".$id_documento;
+	$consulta1 = mysqli_query($conexion,$sql1);
+	while($row1 = mysqli_fetch_array($consulta1)) {
+		$documento_nombre = $row1["ruta"];
+	}
+
+	$imagen_nombre = $_FILES['file']['name'];
+	$extension = explode(".", $imagen_nombre);
+	$extension = $extension[count($extension)-1];
+
+	if($extension!='pdf' and $extension!='jpg' and $extension!='jpeg' and $extension!='png'){
+		$datos = [
+			"estatus"	=> "error",
+			"msg"	=> "Formatos validos JPG, JPEG, PDF, PNG",
+			"sql1"	=> $sql1,
+		];
+		echo json_encode($datos);
+		exit;
+	}
+
+	$location = "../resources/documentos/modelos/archivos/".$usuario_id."/".$documento_nombre.".".$extension;
+
+	if($extension=='pdf'){
+		@unlink($location);
+		move_uploaded_file ($_FILES['file']['tmp_name'],$location);
+	}else if($extension!='pdf'){
+	    $imagen = getimagesize($_FILES['file']['tmp_name']);
+	    $ancho = $imagen[0];
+	    $alto = $imagen[1];
+
+	    if($ancho>$alto){
+	        $imagen_optimizada = redimensionar_imagen($imagen_nombre,$imagen_temporal,1920,1080);
+	        @unlink($location);
+	        imagejpeg($imagen_optimizada, $location);
+	    }else if($ancho<$alto){
+	        $imagen_optimizada = redimensionar_imagen($imagen_nombre,$imagen_temporal,1080,1920);
+	        @unlink($location);
+	        imagejpeg($imagen_optimizada, $location);
+	    }else{
+	        $imagen_optimizada = redimensionar_imagen($imagen_nombre,$imagen_temporal,1080,1080);
+	        @unlink($location);
+	        imagejpeg($imagen_optimizada, $location);
+	    }
+	}
+
+	$sql2 = "DELETE FROM modelos_documentos WHERE id_documentos = ".$id_documento." and id_usuarios = ".$usuario_id;
+	$proceso2 = mysqli_query($conexion,$sql2);
+
+	if($extension!='pdf' and $extension!='jpg' and $extension!='png' and $extension!='jpeg'){
+		$extension='jpg';
+	}
+
+	$sql3 = "INSERT INTO modelos_documentos (id_documentos,id_usuarios,tipo,responsable,fecha_creacion) VALUES ($id_documento,$usuario_id,'$extension',$responsable,'$fecha_creacion')";
+	$proceso3 = mysqli_query($conexion,$sql3);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"msg"	=> "Se ha subido el archivo satisfactoriamente",
+		"sql1"	=> $sql1,
+		"sql2"	=> $sql2,
+		"sql3"	=> $sql3,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='eliminar_documento1'){
+	$id = $_POST['id'];
+
+	$sql1 = "SELECT mdoc.id as id, mdoc.id_documentos as mdoc_id_documentos, mdoc.id_usuarios as mdoc_id_usuarios, mdoc.tipo as mdoc_tipo, doc.nombre as doc_nombre, doc.ruta as doc_ruta FROM modelos_documentos mdoc 
+	INNER JOIN documentos doc 
+	ON mdoc.id_documentos = doc.id 
+	WHERE mdoc.id = ".$id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+
+	while($row1 = mysqli_fetch_array($proceso1)) {
+		$usuario_id = $row1['mdoc_id_usuarios'];
+		$extension = $row1['mdoc_tipo'];
+		$documento_nombre = $row1['doc_nombre'];
+	}
+
+	$location = "../resources/documentos/modelos/archivos/".$usuario_id."/".$documento_nombre.".".$extension;
+	@unlink($location);
+
+	$sql2 = "DELETE FROM modelos_documentos WHERE id = ".$id;
+	$proceso2 = mysqli_query($conexion,$sql2);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"msg"	=> "Se ha eliminado el documento satisfactoriamente",
+		"sql1"	=> $sql1,
+		"sql2"	=> $sql2,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='modificar_emergencia1'){
+	$modelo_id = $_POST["modelo_id"];
+	$usuario_id = $_POST["usuario_id"];
+	$emergencia_nombre = $_POST["emergencia_nombre"];
+	$emergencia_telefono = $_POST["emergencia_telefono"];
+	$emergencia_parentesco = $_POST["emergencia_parentesco"];
+
+	$sql1 = "UPDATE datos_modelos SET emergencia_nombre = '$emergencia_nombre', emergencia_telefono = '$emergencia_telefono', emergencia_parentesco = '$emergencia_parentesco' WHERE id = ".$modelo_id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"msg"	=> "Se ha modificado satisfactoriamente!",
+		"sql1"	=> $sql1,
+	];
 	echo json_encode($datos);
 }
 

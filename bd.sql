@@ -70,6 +70,7 @@ CREATE TABLE usuarios (
 	documento_numero VARCHAR(250) NOT NULL,
 	correo_personal VARCHAR(250) NOT NULL,
 	correo_empresa VARCHAR(250) NOT NULL,
+	fecha_nacimiento date NOT NULL,
 	clave VARCHAR(250) NOT NULL,
 	telefono VARCHAR(250) NOT NULL,
 	rol INT NOT NULL,
@@ -129,7 +130,8 @@ INSERT INTO funciones_usuarios (id_usuarios,id_modulos,id_usuario_rol,crear,modi
 (1,2,'Nomina',1,1,1,1,1,'2021-08-11'),
 (1,3,'Nomina',1,1,1,1,1,'2021-08-11'),
 (1,4,'Nomina',1,1,1,1,1,'2021-08-11'),
-(1,5,'Nomina',1,1,1,1,1,'2021-08-11');
+(1,5,'Nomina',1,1,1,1,1,'2021-08-11'),
+(1,1,'Modelo',1,1,1,1,1,'2021-09-03');
 
 DROP TABLE IF EXISTS modulos_multiple_usuarios;
 CREATE TABLE modulos_multiple_usuarios (
@@ -175,7 +177,9 @@ INSERT INTO modulos_multiple_usuarios (id_usuarios,id_modulos_multiple,responsab
 (1,30,1,'2021-08-11'),
 (1,31,1,'2021-08-11'),
 (1,32,1,'2021-08-11'),
-(1,33,1,'2021-08-11');
+(1,33,1,'2021-08-11'),
+
+(1,36,1,'2021-09-03');
 
 DROP TABLE IF EXISTS usuario_conexion;
 CREATE TABLE usuario_conexion (
@@ -265,12 +269,31 @@ CREATE TABLE datos_nominas (
 	id_usuarios INT NOT NULL,
 	sede INT NOT NULL,
 	estatus INT NOT NULL,
+	turno INT DEFAULT 0,
+	cargo INT DEFAULT 0,
+	salario INT NOT NULL,
+	fecha_expedicion date NOT NULL,
+	fecha_ingreso date NOT NULL,
+	fecha_retiro date NOT NULL,
+	funcion INT NOT NULL,
+	contrato INT NOT NULL,
+	banco_cedula VARCHAR(250) NOT NULL,
+	banco_tipo_documento INT NOT NULL,
+	banco_nombre VARCHAR(250) NOT NULL,
+	banco_bcpp VARCHAR(250) NOT NULL,
+	banco_tipo VARCHAR(250) NOT NULL,
+	banco_numero VARCHAR(250) NOT NULL,
+	banco_banco VARCHAR(250) NOT NULL,
+	emergencia_nombre VARCHAR(250) NOT NULL,
+	emergencia_telefono VARCHAR(250) NOT NULL,
+	emergencia_parentesco VARCHAR(250) NOT NULL,
+	fecha_modificacion date NOT NULL,
 	fecha_creacion date NOT NULL,
 	PRIMARY KEY (id)
 ); ALTER TABLE datos_nominas CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 INSERT INTO datos_nominas (id_usuarios,sede,estatus,fecha_creacion) VALUES 
-(1,1,1,'2021-04-19');
+(1,1,1,'2021-09-13');
 
 DROP TABLE IF EXISTS modulos_sub;
 CREATE TABLE modulos_sub (
@@ -279,47 +302,50 @@ CREATE TABLE modulos_sub (
 	url VARCHAR(250) NOT NULL,
 	id_modulos INT NOT NULL,
 	principal INT NOT NULL,
+	id_usuario_rol VARCHAR(250) NOT NULL,
 	estatus INT NOT NULL,
 	responsable INT NOT NULL,
 	fecha_creacion date NOT NULL,
 	PRIMARY KEY (id)
 ); ALTER TABLE modulos_sub CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
-INSERT INTO modulos_sub (nombre,url,id_modulos,principal,estatus,responsable,fecha_creacion) VALUES 
-('RRHH','rhh.php',1,1,1,1,'2021-08-11'),
-('PQR','pqr.php',1,0,1,1,'2021-08-11'),
-('SOPORTE','soporte.php',2,1,1,1,'2021-08-11'),
-('MONITOR','monitor.php',2,1,1,1,'2021-08-11'),
-('I+D','imd.php',2,1,1,1,'2021-08-11'),
-('SOPORTE TECNICO','soportetecnico.php',2,1,1,1,'2021-08-11'),
-('PQR','pqr.php',2,0,1,1,'2021-08-11'),
-('CONSULTA DESPRENDIBLES','consultasdesprendibles.php',3,0,1,1,'2021-08-11'),
-('NOMINA','nomina.php',3,0,1,1,'2021-08-11'),
-('DESCUENTOS','descuentos.php',3,1,1,1,'2021-08-11'),
-('BONOS','bonos.php',3,1,1,1,'2021-08-11'),
-('CARGAR PAGINAS','cargarpaginas.php',3,0,1,1,'2021-08-11'),
-('DESPRENDIBLES','desprendibles.php',3,1,1,1,'2021-08-11'),
-('CONVERSOR DE ARCHIVOS','conversordearchivos.php',3,0,1,1,'2021-08-11'),
-('ESTADISTICAS','estadisticas.php',3,0,1,1,'2021-08-11'),
-('FACTURAS','facturas.php',3,0,1,1,'2021-08-11'),
-('PQR','pqr.php',3,0,1,1,'2021-08-11'),
-('CALL CENTER','callcenter.php',5,0,1,1,'2021-08-11'),
-('SEX SHOP','callcenter.php',5,0,1,1,'2021-08-18'),
-('SPA','callcenter.php',5,0,1,1,'2021-08-18'),
-('BUFFET','callcenter.php',5,0,1,1,'2021-08-18'),
-('TECNOLOGIA','callcenter.php',5,0,1,1,'2021-08-18'),
-('VENDING MACHINE','callcenter.php',5,0,1,1,'2021-08-18'),
-('MONETIZACION','callcenter.php',5,0,1,1,'2021-08-18'),
-('INGLES ACADEMY','callcenter.php',5,0,1,1,'2021-08-18'),
-('COOPERATIVA F','callcenter.php',5,0,1,1,'2021-08-18'),
-('ESTUDIOS ALIADOS','callcenter.php',5,0,1,1,'2021-08-18'),
-('CAMTOKENS','callcenter.php',5,0,1,1,'2021-08-18'),
-('S MONITOREO','callcenter.php',5,0,1,1,'2021-08-23'),
-('S ADMINISTRATIVO','callcenter.php',5,0,1,1,'2021-08-23'),
-('COMMUNNITY','community.php',4,0,1,1,'2021-08-11'),
-('COSTUME SERVICE','costumbeservice.php',4,0,1,1,'2021-08-11'),
-('FOTOGRAFIA','fotografia.php',4,0,1,1,'2021-08-11'),
-('DISEÑO GRAFICO','disenografico.php',4,0,1,1,'2021-08-11'),
-('DISEÑO DE CONTENIDO','disenodecontenido.php',4,0,1,1,'2021-08-11');
+INSERT INTO modulos_sub (nombre,url,id_modulos,principal,estatus,responsable,id_usuario_rol,fecha_creacion) VALUES 
+('RRHH','rrhh.php',1,1,1,1,'Nomina','2021-08-11'),
+('PQR','pqr.php',1,0,1,1,'Nomina','2021-08-11'),
+('SOPORTE','soporte.php',2,1,1,1,'Nomina','2021-08-11'),
+('MONITOR','monitor.php',2,1,1,1,'Nomina','2021-08-11'),
+('I+D','imd.php',2,1,1,1,'Nomina','2021-08-11'),
+('SOPORTE TECNICO','soportetecnico.php',2,1,1,1,'Nomina','2021-08-11'),
+('PQR','pqr.php',2,0,1,1,'Nomina','2021-08-11'),
+('CONSULTA DESPRENDIBLES','consultasdesprendibles.php',3,0,1,1,'Nomina','2021-08-11'),
+('NOMINA','nomina.php',3,0,1,1,'Nomina','2021-08-11'),
+('DESCUENTOS','descuentos.php',3,1,1,1,'Nomina','2021-08-11'),
+('BONOS','bonos.php',3,1,1,1,'Nomina','2021-08-11'),
+('CARGAR PAGINAS','cargarpaginas.php',3,0,1,1,'Nomina','2021-08-11'),
+('DESPRENDIBLES','desprendibles.php',3,1,1,1,'Nomina','2021-08-11'),
+('CONVERSOR DE ARCHIVOS','conversordearchivos.php',3,0,1,1,'Nomina','2021-08-11'),
+('ESTADISTICAS','estadisticas.php',3,0,1,1,'Nomina','2021-08-11'),
+('FACTURAS','facturas.php',3,0,1,1,'Nomina','2021-08-11'),
+('PQR','pqr.php',3,0,1,1,'Nomina','2021-08-11'),
+('CALL CENTER','callcenter.php',5,0,1,1,'Nomina','2021-08-11'),
+('SEX SHOP','callcenter.php',5,0,1,1,'Nomina','2021-08-18'),
+('SPA','callcenter.php',5,0,1,1,'Nomina','2021-08-18'),
+('BUFFET','callcenter.php',5,0,1,1,'Nomina','2021-08-18'),
+('TECNOLOGIA','callcenter.php',5,0,1,1,'Nomina','2021-08-18'),
+('VENDING MACHINE','callcenter.php',5,0,1,1,'Nomina','2021-08-18'),
+('MONETIZACION','callcenter.php',5,0,1,1,'Nomina','2021-08-18'),
+('INGLES ACADEMY','callcenter.php',5,0,1,1,'Nomina','2021-08-18'),
+('COOPERATIVA F','callcenter.php',5,0,1,1,'Nomina','2021-08-18'),
+('ESTUDIOS ALIADOS','callcenter.php',5,0,1,1,'Nomina','2021-08-18'),
+('CAMTOKENS','callcenter.php',5,0,1,1,'Nomina','2021-08-18'),
+('S MONITOREO','callcenter.php',5,0,1,1,'Nomina','2021-08-23'),
+('S ADMINISTRATIVO','callcenter.php',5,0,1,1,'Nomina','2021-08-23'),
+('COMMUNNITY','community.php',4,0,1,1,'Nomina','2021-08-11'),
+('COSTUME SERVICE','costumbeservice.php',4,0,1,1,'Nomina','2021-08-11'),
+('FOTOGRAFIA','fotografia.php',4,0,1,1,'Nomina','2021-08-11'),
+('DISEÑO GRAFICO','disenografico.php',4,0,1,1,'Nomina','2021-08-11'),
+('DISEÑO DE CONTENIDO','disenodecontenido.php',4,0,1,1,'Nomina','2021-08-11'),
+
+('MIS DATOS','../welcome/index.php',1,1,1,1,'Modelo','2021-09-03');
 
 DROP TABLE IF EXISTS modulos_multiple;
 CREATE TABLE modulos_multiple (
@@ -333,14 +359,18 @@ CREATE TABLE modulos_multiple (
 	PRIMARY KEY (id)
 ); ALTER TABLE modulos_multiple CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 INSERT INTO modulos_multiple (nombre,url,id_sub_modulos,estatus,responsable,fecha_creacion) VALUES 
-('PASANTES 1','pasantes1.php',1,1,1,'2021-08-18'),
-('PASANTES 2','pasantes2.php',1,1,1,'2021-08-18'),
-('PASANTES 3','pasantes3.php',1,1,1,'2021-08-18'),
-('PASANTES 4','pasantes4.php',1,1,1,'2021-08-18'),
-('MODELOS 1','modelos1.php',1,1,1,'2021-08-25'),
-('MODELOS 2','modelos2.php',1,1,1,'2021-08-25'),
-('MODELOS 3','modelos3.php',1,1,1,'2021-08-25'),
-('MODELOS 4','modelos4.php',1,1,1,'2021-08-25'),
+('PS SUPER','pasantes1.php',1,1,1,'2021-09-01'),
+('PS ADMON','pasantes2.php',1,1,1,'2021-09-01'),
+('PS VISUAL','pasantes3.php',1,1,1,'2021-09-01'),
+('PS VISUAL S','pasantes4.php',1,1,1,'2021-09-01'),
+('MO SUPER','modelos1.php',1,1,1,'2021-09-01'),
+('MO ADMON','modelos2.php',1,1,1,'2021-09-01'),
+('MO VISUAL','modelos3.php',1,1,1,'2021-09-01'),
+('MO VISUAL S','modelos4.php',1,1,1,'2021-09-01'),
+('NO SUPER','nomina1.php',1,1,1,'2021-09-13'),
+('NO ADMON','nomina2.php',1,1,1,'2021-09-13'),
+('NO VISUAL','nomina3.php',1,1,1,'2021-09-13'),
+('NO VISUAL S','nomina4.php',1,1,1,'2021-09-13'),
 ('NOVEDADES','novedades.php',1,1,1,'2021-08-11'),
 ('CUENTAS','cuentas.php',3,1,1,'2021-08-11'),
 ('REPORTE DE RENDIMIENTO','reportederendimiento.php',3,1,1,'2021-08-11'),
@@ -363,7 +393,15 @@ INSERT INTO modulos_multiple (nombre,url,id_sub_modulos,estatus,responsable,fech
 ('BONO CUMPLIMIENTO','bonocumplimiento.php',11,1,1,'2021-08-11'),
 ('AJUSTE','ajuste.php',11,1,1,'2021-08-11'),
 ('MODELOS','modelos.php',13,1,1,'2021-08-11'),
-('NOMINA','nomina.php',13,1,1,'2021-08-11');
+('NOMINA','nomina.php',13,1,1,'2021-08-11'),
+
+('D PERSONALES','m_dpersonales.php',36,1,1,'2021-08-11'),
+('D CORPORALES','m_dcorporales.php',36,1,1,'2021-08-11'),
+('D DOCUMENTOS','m_ddocumentos.php',36,1,1,'2021-08-11'),
+('D FOTOS','m_dfotos.php',36,1,1,'2021-08-11'),
+('D EMPRESA','m_dempresa.php',36,1,1,'2021-08-11'),
+('D BANCARIOS','m_dbancarios.php',36,1,1,'2021-08-11'),
+('CUENTAS','m_cuentas.php',36,1,1,'2021-08-11');
 
 DROP TABLE IF EXISTS modulos_sub_usuarios;
 CREATE TABLE modulos_sub_usuarios (
@@ -408,7 +446,11 @@ INSERT INTO modulos_sub_usuarios (id_modulos_sub,id_usuarios,estatus,responsable
 (30,1,1,1,'2021-08-09'),
 (31,1,1,1,'2021-08-09'),
 (32,1,1,1,'2021-08-09'),
-(33,1,1,1,'2021-08-09');
+(33,1,1,1,'2021-08-09'),
+(34,1,1,1,'2021-08-09'),
+(35,1,1,1,'2021-08-09'),
+
+(36,1,1,1,'2021-09-03');
 
 DROP TABLE IF EXISTS datos_modelos;
 CREATE TABLE datos_modelos (
@@ -434,6 +476,9 @@ CREATE TABLE datos_modelos (
 	color_ojos VARCHAR(250) NOT NULL,
 	ptattu VARCHAR(250) NOT NULL,
 	ppiercing VARCHAR(250) NOT NULL,
+	emergencia_nombre VARCHAR(250) NOT NULL,
+	emergencia_telefono VARCHAR(250) NOT NULL,
+	emergencia_parentesco VARCHAR(250) NOT NULL,
 	turno INT DEFAULT 0,
 	estatus INT NOT NULL,
 	sede INT NOT NULL,
@@ -620,11 +665,11 @@ CREATE TABLE documentos (
 ); ALTER TABLE documentos CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 INSERT INTO documentos (nombre,ruta,fecha_creacion) VALUES 
-('Contrato Prestación','contrato_prestacion_final','2020-09-15'),
+('Firma de Contrato','firma_digital','2020-09-15'),
 ('Documento de Identidad','documento_de_identidad','2020-09-28'),
 ('Pasaporte','pasaporte','2020-09-28'),
 ('RUT','rut','2020-09-28'),
-('Certificación Bancaria','certificacion_bancario','2020-09-28'),
+('Certificación Bancaria','certificacion_bancaria','2020-09-28'),
 ('EPS','eps','2020-09-28'),
 ('Antecedentes Disciplinarios','antecedentes_disciplinarios','2020-09-28'),
 ('Foto Cédula con Cara','foto_cedula_con_cara','2020-09-28'),

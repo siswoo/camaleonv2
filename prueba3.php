@@ -4,13 +4,13 @@
 	require 'resources/PHPMailer/PHPMailer/src/Exception.php';
 	require 'resources/PHPMailer/PHPMailer/src/PHPMailer.php';
 	require 'resources/PHPMailer/PHPMailer/src/SMTP.php';
-	include('conexion.php');
+	//include('conexion.php');
 	$correo_personal = "juanmaldonado.co@gmail.com";
 	$fecha_inicio = date('Y-m-d');
 
 	$sql1 = "SELECT * FROM usuarios WHERE correo_personal =".$correo_personal;
-	$proceso1 = mysqli_query($conexion,$sql1);
-	$contador1 = mysqli_num_rows($proceso1);
+	//$proceso1 = mysqli_query($conexion,$sql1);
+	//$contador1 = mysqli_num_rows($proceso1);
 
 	$clave_generada = rand(999, 9999);
 	$clave = md5($clave_generada);
@@ -22,15 +22,14 @@
 		try {
 		    $mail->isSMTP();
 		    $mail->CharSet = "UTF-8";
-		    $mail->Host = 'mail.camaleonpruebas.com';
+		    $mail->Host = 'mail.camaleonmg.com';
 		    $mail->SMTPAuth = true;
-		    $mail->Username = 'test1@camaleonpruebas.com';
+		    $mail->Username = 'noreply@camaleonmg.com';
 		    $mail->Password = 'juanmaldonado123';
 		    $mail->SMTPSecure = 'tls';
-		    $mail->Port = 587;
+		    $mail->Port = 995;
 
-		    $mail->setFrom('test1@camaleonpruebas.com');
-		    //$mail->addAddress($correo_modelo);
+		    $mail->setFrom('noreply@camaleonmg.com');
 		    $mail->addAddress($correo_personal);
 		    $mail->AddEmbeddedImage("img/mails/mailing modelo1.png", "my-attach", "mailing modelo1.png");
 		    $html = "
@@ -51,7 +50,10 @@
 		    $mail->AltBody = 'Este es el contenido del mensaje en texto plano';
 		 
 		    $mail->send();
-		} catch (Exception $e) {}
+		} catch (Exception $e) {
+			echo "nope";
+			exit;
+		}
 		/**************************************************/
 
 	$datos = [

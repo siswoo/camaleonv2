@@ -62,21 +62,12 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 				<option value="3">Inactivos</option>
 			</select>
 		</div>
-		<div class="col-3 form-group form-check">
-			<label for="consultaporsede" style="color:black; font-weight: bold;">Consultas por Sede</label>
-			<select class="form-control" id="consultaporsede" name="consultaporsede">
-				<option value="">Todos</option>
-				<?php
-					$sql9 = "SELECT * FROM sedes WHERE id_empresa = ".$_SESSION['camaleonapp_empresa'];
-					$proceso9 = mysqli_query($conexion,$sql9);
-						while($row9 = mysqli_fetch_array($proceso9)) {
-							echo '
-								<option value="'.$row9["id"].'">'.$row9["nombre"].'</option>
-							';			
-						}
-				?>
-			</select>
-		</div>
+		<?php
+		$sql15 = "SELECT * FROM usuarios WHERE id = ".$_SESSION["camaleonapp_id"]." LIMIT 1";
+		$proceso15 = mysqli_query($conexion,$sql15);
+		while($row15 = mysqli_fetch_array($proceso15)) { ?>
+			<input type="hidden" id="consultaporsede" name="consultaporsede" value="<?php echo $row15["id"]; ?>">
+		<?php } ?>
 		<div class="col-1">
 			<br>
 			<button type="button" class="btn btn-info mt-2" onclick="filtrar1();">Filtrar</button>
@@ -84,7 +75,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 	</div>
 </div>
 
-<div id="resultado_table1">Aqui!</div>
+<div id="resultado_table2">Aqui!</div>
 
 <!------------------------>
 <input type="hidden" name="usuario_id" id="usuario_id">
@@ -106,23 +97,23 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					    <div class="row">
 						    <div class="col-12 form-group form-check">
 							    <label for="nombre1" style="font-weight: bold;">Primer Nombre</label>
-							    <input type="text" name="nombre1" id="nombre1" class="form-control" required>
+							    <input type="text" name="nombre1" id="nombre1" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="nombre2" style="font-weight: bold;">Segundo Nombre</label>
-							    <input type="text" name="nombre2" id="nombre2" class="form-control" required>
+							    <input type="text" name="nombre2" id="nombre2" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="apellido1" style="font-weight: bold;">Primer Apellido</label>
-							    <input type="text" name="apellido1" id="apellido1" class="form-control" required>
+							    <input type="text" name="apellido1" id="apellido1" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="apellido2" style="font-weight: bold;">Segundo Apellido</label>
-							    <input type="text" name="apellido2" id="apellido2" class="form-control" required>
+							    <input type="text" name="apellido2" id="apellido2" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="documento_tipo" style="font-weight: bold;">Documento Tipo</label>
-							    <select class="form-control" name="documento_tipo" id="documento_tipo" required>
+							    <select class="form-control" name="documento_tipo" id="documento_tipo" disabled required>
 							    	<option value="">Seleccione</option>
 							    	<?php
 							    	$sql10 = "SELECT * FROM documento_tipo";
@@ -139,19 +130,19 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="documento_numero" style="font-weight: bold;">Documento Número</label>
-							    <input type="text" name="documento_numero" id="documento_numero" class="form-control" required>
+							    <input type="text" name="documento_numero" id="documento_numero" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="correo" style="font-weight: bold;">Correo Personal</label>
-							    <input type="email" name="correo" id="correo" class="form-control" required>
+							    <input type="email" name="correo" id="correo" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="telefono" style="font-weight: bold;">Teléfono</label>
-							    <input type="text" name="telefono" id="telefono" class="form-control" required>
+							    <input type="text" name="telefono" id="telefono" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="genero" style="font-weight: bold;">Género</label>
-							    <select class="form-control" name="genero" id="genero" required>
+							    <select class="form-control" name="genero" id="genero" disabled required>
 							    	<option value="">Seleccione</option>
 							    	<?php
 							    	$sql11 = "SELECT * FROM genero WHERE id_empresa = ".$_SESSION['camaleonapp_empresa'];
@@ -168,11 +159,11 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="direccion" style="font-weight: bold;">Dirección</label>
-							    <textarea class="form-control" name="direccion" id="direccion" required></textarea>
+							    <textarea class="form-control" name="direccion" id="direccion" disabled required></textarea>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="pais" style="font-weight: bold;">Pais</label>
-							    <select class="form-control" name="pais" id="pais" required>
+							    <select class="form-control" name="pais" id="pais" disabled required>
 							    	<option value="">Seleccione</option>
 							    	<?php
 							    	$sql12 = "SELECT * FROM paises";
@@ -187,47 +178,10 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 										?>
 							    </select>
 						    </div>
-						    <!--
-						    <div class="col-12 form-group form-check">
-							    <label for="sede" style="font-weight: bold;">Sedes</label>
-							    <select class="form-control" name="sede" id="sede" required>
-							    	<option value="">Seleccione</option>
-							    	<?php
-							    	$sql13 = "SELECT * FROM sedes WHERE id_empresa = ".$_SESSION['camaleonapp_empresa'];
-							    	$proceso13 = mysqli_query($conexion,$sql13);
-										while($row13 = mysqli_fetch_array($proceso13)) {
-											$sede_id = $row13["id"];
-											$sede_nombre = $row13["nombre"];
-											echo '
-												<option value="'.$sede_id.'">'.$sede_nombre.'</option>
-											';
-										}
-										?>
-							    </select>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="turno" style="font-weight: bold;">Turno</label>
-							    <select class="form-control" name="turno" id="turno" required>
-							    	<option value="">Seleccione</option>
-							    	<?php
-							    	$sql14 = "SELECT * FROM turnos";
-							    	$proceso14 = mysqli_query($conexion,$sql14);
-										while($row14 = mysqli_fetch_array($proceso14)) {
-											$sede_id = $row14["id"];
-											$sede_nombre = $row14["nombre"];
-											echo '
-												<option value="'.$sede_id.'">'.$sede_nombre.'</option>
-											';
-										}
-										?>
-							    </select>
-						    </div>
-					  		-->
 					    </div>
 					</div>
 					<div class="modal-footer">
 				        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				        <button type="submit" class="btn btn-success" id="submit_personales1">Guardar</button>
 			      	</div>
 		      	</form>
 	    	</div>
@@ -250,21 +204,20 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					    <div class="row">
 						    <div class="col-12 form-group form-check">
 							    <label for="emergencia_nombre" style="font-weight: bold;">Nombre</label>
-							    <input type="text" name="emergencia_nombre" id="emergencia_nombre" class="form-control" required>
+							    <input type="text" name="emergencia_nombre" id="emergencia_nombre" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="emergencia_telefono" style="font-weight: bold;">Teléfono</label>
-							    <input type="text" name="emergencia_telefono" id="emergencia_telefono" class="form-control" required>
+							    <input type="text" name="emergencia_telefono" id="emergencia_telefono" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="emergencia_parentesco" style="font-weight: bold;">Parentesco</label>
-							    <input type="text" name="emergencia_parentesco" id="emergencia_parentesco" class="form-control" required>
+							    <input type="text" name="emergencia_parentesco" id="emergencia_parentesco" class="form-control" disabled required>
 						    </div>
 					    </div>
 					</div>
 					<div class="modal-footer">
 				        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				        <button type="submit" class="btn btn-success" id="submit_emergencia1">Guardar</button>
 			      	</div>
 		      	</form>
 	    	</div>
@@ -287,19 +240,19 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					  <div class="row">
 						    <div class="col-12 form-group form-check">
 							    <label for="altura" style="font-weight: bold;">Altura</label>
-							    <input type="text" name="altura" id="altura" class="form-control" required>
+							    <input type="text" name="altura" id="altura" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="peso" style="font-weight: bold;">Peso</label>
-							    <input type="text" name="peso" id="peso" class="form-control" required>
+							    <input type="text" name="peso" id="peso" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="pene" style="font-weight: bold;">Tamaño de Pene</label>
-							    <input type="text" name="pene" id="pene" class="form-control" required>
+							    <input type="text" name="pene" id="pene" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="sosten" style="font-weight: bold;">Medida de Sosten</label>
-							    <select class="form-control" name="sosten" id="sosten" required>
+							    <select class="form-control" name="sosten" id="sosten" disabled required>
 										<option value="">Seleccione</option>
 										<option value="32A">32A</option>
 										<option value="32B">32B</option>
@@ -325,19 +278,19 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="busto" style="font-weight: bold;">Tamaño de Busto</label>
-							    <input type="text" name="busto" id="busto" class="form-control" required>
+							    <input type="text" name="busto" id="busto" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="cintura" style="font-weight: bold;">Tamaño de Cintura</label>
-							    <input type="text" name="cintura" id="cintura" class="form-control" required>
+							    <input type="text" name="cintura" id="cintura" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="caderas" style="font-weight: bold;">Tamaño de Caderas</label>
-							    <input type="text" name="caderas" id="caderas" class="form-control" required>
+							    <input type="text" name="caderas" id="caderas" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="cuerpo" style="font-weight: bold;">Tipo de Cuerpo</label>
-							    <select name="cuerpo" id="cuerpo" class="form-control" required>
+							    <select name="cuerpo" id="cuerpo" class="form-control" disabled required>
 							    	<option value="">Seleccione</option>
 								    <option value="Delgado">Delgado</option>
 										<option value="Promedio">Promedio</option>
@@ -348,7 +301,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="vello" style="font-weight: bold;">Vello Púbico</label>
-							    <select class="form-control" name="vello" id="vello" required>
+							    <select class="form-control" name="vello" id="vello" disabled required>
 										<option value="">Seleccione</option>
 										<option value="Peludo">Peludo</option>
 										<option value="Recortado">Recortado</option>
@@ -358,15 +311,15 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="cabello" style="font-weight: bold;">Color de Cabello</label>
-							    <input type="text" name="cabello" id="cabello" class="form-control" required>
+							    <input type="text" name="cabello" id="cabello" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="ojos" style="font-weight: bold;">Color de Ojos</label>
-							    <input type="text" name="ojos" id="ojos" class="form-control" required>
+							    <input type="text" name="ojos" id="ojos" class="form-control" disabled required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="tattu" style="font-weight: bold;">Tattu</label>
-							    <select class="form-control" name="tattu" id="tattu" required>
+							    <select class="form-control" name="tattu" id="tattu" disabled required>
 										<option value="">Seleccione</option>
 										<option value="Si">Si</option>
 										<option value="No">No</option>
@@ -374,7 +327,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="piercing" style="font-weight: bold;">Piercing</label>
-							    <select class="form-control" name="piercing" id="piercing" required>
+							    <select class="form-control" name="piercing" id="piercing" disabled required>
 										<option value="">Seleccione</option>
 										<option value="Si">Si</option>
 										<option value="No">No</option>
@@ -384,7 +337,6 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					</div>
 					<div class="modal-footer">
 						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-						<button type="submit" class="btn btn-success" id="submit_corporales1">Guardar</button>
 					</div>
 				</div>
 			</form>
@@ -607,7 +559,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					  <div class="row">
 						  <div class="col-12 form-group form-check">
 							  <label for="turno" style="font-weight: bold;">Turno</label>
-							  <select class="form-control" name="turno" id="turno" required>
+							  <select class="form-control" name="turno" id="turno" disabled required>
 							  <?php
 							    $sql16 = "SELECT * FROM turnos";
 							    $proceso16 = mysqli_query($conexion,$sql16);
@@ -623,7 +575,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 						  </div>
 						  <div class="col-12 form-group form-check">
 							  <label for="sede" style="font-weight: bold;">Sede</label>
-							  <select class="form-control" name="sede" id="sede" required>
+							  <select class="form-control" name="sede" id="sede" disabled required>
 							  <?php
 							    $sql17 = "SELECT * FROM sedes WHERE id_empresa = ".$_SESSION["camaleonapp_empresa"];
 							    $proceso17 = mysqli_query($conexion,$sql17);
@@ -641,7 +593,6 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					</div>
 					<div class="modal-footer">
 				    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				    <button type="submit" class="btn btn-success" id="submit_empresa1">Guardar</button>
 			    </div>
 			  </div>
 		  </form>
@@ -695,13 +646,13 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 				"filtrado": filtrado,
 				"m_estatus": m_estatus,
 				"link1": ubicacion_url,
-				"condicion": "table1",
+				"condicion": "table2",
 			},
 
 			success: function(respuesta) {
 				//console.log(respuesta);
 				if(respuesta["estatus"]=="ok"){
-					$('#resultado_table1').html(respuesta["html"]);
+					$('#resultado_table2').html(respuesta["html"]);
 				}
 			},
 

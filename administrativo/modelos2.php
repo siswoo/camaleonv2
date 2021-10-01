@@ -62,21 +62,13 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 				<option value="3">Inactivos</option>
 			</select>
 		</div>
-		<div class="col-3 form-group form-check">
-			<label for="consultaporsede" style="color:black; font-weight: bold;">Consultas por Sede</label>
-			<select class="form-control" id="consultaporsede" name="consultaporsede">
-				<option value="">Todos</option>
-				<?php
-					$sql9 = "SELECT * FROM sedes WHERE id_empresa = ".$_SESSION['camaleonapp_empresa'];
-					$proceso9 = mysqli_query($conexion,$sql9);
-						while($row9 = mysqli_fetch_array($proceso9)) {
-							echo '
-								<option value="'.$row9["id"].'">'.$row9["nombre"].'</option>
-							';			
-						}
-				?>
-			</select>
-		</div>
+		<?php
+		$sql15 = "SELECT * FROM usuarios WHERE id = ".$_SESSION["camaleonapp_id"]." LIMIT 1";
+		$proceso15 = mysqli_query($conexion,$sql15);
+		while($row15 = mysqli_fetch_array($proceso15)) { ?>
+			<input type="hidden" id="consultaporsede" name="consultaporsede" value="<?php echo $row15["id"]; ?>">
+		<?php } ?>
+		<input type="hidden" class="form-control" id="consultaporsede" name="consultaporsede" value="">
 		<div class="col-1">
 			<br>
 			<button type="button" class="btn btn-info mt-2" onclick="filtrar1();">Filtrar</button>

@@ -20,7 +20,7 @@ INNER JOIN funciones_usuarios fus
 ON fus.id_modulos = mo.id 
 INNER JOIN modulos_empresas moem 
 ON moem.id_modulos = mo.id 
-WHERE mo.estatus = 1 and fus.id_usuarios = ".$_SESSION['camaleonapp_id']." and moem.id_empresas = ".$_SESSION['camaleonapp_empresa']."  ORDER BY orden ASC";
+WHERE mo.estatus = 1 and fus.id_usuarios = ".$_SESSION['camaleonapp_id']." and moem.id_empresas = ".$_SESSION['camaleonapp_empresa']." and fus.id_usuario_rol = '".$_SESSION['camaleonapp_estatus']."' ORDER BY orden ASC";
 
 $proceso1 = mysqli_query($conexion,$sql1);
 while($row1 = mysqli_fetch_array($proceso1)) {
@@ -36,7 +36,7 @@ while($row1 = mysqli_fetch_array($proceso1)) {
 	$sql2 = "SELECT mos.id as mos_id, mos.nombre as mos_nombre, mos.url as mos_url, mos.principal as mos_principal FROM modulos_sub mos 
 	INNER JOIN modulos_sub_usuarios mosus 
 	ON mos.id = mosus.id_modulos_sub 
-	WHERE id_modulos = ".$modulos_id." and mos.estatus = 1 and mosus.id_usuarios = ".$_SESSION['camaleonapp_id']." and mosus.estatus = 1";
+	WHERE id_modulos = ".$modulos_id." and mos.estatus = 1 and mosus.id_usuarios = ".$_SESSION['camaleonapp_id']." and mosus.estatus = 1 and mos.id_usuario_rol = '".$_SESSION['camaleonapp_estatus']."'";
 	$proceso2 = mysqli_query($conexion,$sql2);
 	while($row2 = mysqli_fetch_array($proceso2)) {
 		$modulos_sub_id = $row2["mos_id"];
@@ -49,7 +49,6 @@ while($row1 = mysqli_fetch_array($proceso1)) {
 			$modulos_sub_toggle = '';
 		}else{
 			$modulos_sub_url_final = '#';
-			//$modulos_sub_toggle = 'dropdown-toggle';
 			$modulos_sub_toggle = ' <span style="color:#b67831; font-weight:bold; font-size: 20px;"> <img src="../img/otros/header_flecha1.png" class="img-fluid" style="width:20px;"> </span> ';
 		}
 

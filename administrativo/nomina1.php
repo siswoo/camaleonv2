@@ -187,42 +187,6 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 										?>
 							    </select>
 						    </div>
-						    <!--
-						    <div class="col-12 form-group form-check">
-							    <label for="sede" style="font-weight: bold;">Sedes</label>
-							    <select class="form-control" name="sede" id="sede" required>
-							    	<option value="">Seleccione</option>
-							    	<?php
-							    	$sql13 = "SELECT * FROM sedes WHERE id_empresa = ".$_SESSION['camaleonapp_empresa'];
-							    	$proceso13 = mysqli_query($conexion,$sql13);
-										while($row13 = mysqli_fetch_array($proceso13)) {
-											$sede_id = $row13["id"];
-											$sede_nombre = $row13["nombre"];
-											echo '
-												<option value="'.$sede_id.'">'.$sede_nombre.'</option>
-											';
-										}
-										?>
-							    </select>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="turno" style="font-weight: bold;">Turno</label>
-							    <select class="form-control" name="turno" id="turno" required>
-							    	<option value="">Seleccione</option>
-							    	<?php
-							    	$sql14 = "SELECT * FROM turnos";
-							    	$proceso14 = mysqli_query($conexion,$sql14);
-										while($row14 = mysqli_fetch_array($proceso14)) {
-											$sede_id = $row14["id"];
-											$sede_nombre = $row14["nombre"];
-											echo '
-												<option value="'.$sede_id.'">'.$sede_nombre.'</option>
-											';
-										}
-										?>
-							    </select>
-						    </div>
-					  		-->
 					    </div>
 					</div>
 					<div class="modal-footer">
@@ -272,126 +236,6 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 	</div>
 <!---------------------------------------->
 
-<!-- Modal corporales1 -->
-	<div class="modal fade" id="corporales1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<form action="#" method="POST" id="corporales1_form" style="">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">MODIFICAR DATOS</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-					  <div class="row">
-						    <div class="col-12 form-group form-check">
-							    <label for="altura" style="font-weight: bold;">Altura</label>
-							    <input type="text" name="altura" id="altura" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="peso" style="font-weight: bold;">Peso</label>
-							    <input type="text" name="peso" id="peso" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="pene" style="font-weight: bold;">Tamaño de Pene</label>
-							    <input type="text" name="pene" id="pene" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="sosten" style="font-weight: bold;">Medida de Sosten</label>
-							    <select class="form-control" name="sosten" id="sosten" required>
-										<option value="">Seleccione</option>
-										<option value="32A">32A</option>
-										<option value="32B">32B</option>
-										<option value="32C">32C</option>
-										<option value="32D">32D</option>
-										<option value="34A">34A</option>
-										<option value="34B">34B</option>
-										<option value="34C">34C</option>
-										<option value="34D">34D</option>
-										<option value="36A">36A</option>
-										<option value="36B">36B</option>
-										<option value="36C">36C</option>
-										<option value="36D">36D</option>
-										<option value="38A">38A</option>
-										<option value="38B">38B</option>
-										<option value="38C">38C</option>
-										<option value="38D">38D</option>
-										<option value="40A">40A</option>
-										<option value="40B">40B</option>
-										<option value="40C">40C</option>
-										<option value="40D">40D</option>
-									</select>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="busto" style="font-weight: bold;">Tamaño de Busto</label>
-							    <input type="text" name="busto" id="busto" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="cintura" style="font-weight: bold;">Tamaño de Cintura</label>
-							    <input type="text" name="cintura" id="cintura" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="caderas" style="font-weight: bold;">Tamaño de Caderas</label>
-							    <input type="text" name="caderas" id="caderas" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="cuerpo" style="font-weight: bold;">Tipo de Cuerpo</label>
-							    <select name="cuerpo" id="cuerpo" class="form-control" required>
-							    	<option value="">Seleccione</option>
-								    <option value="Delgado">Delgado</option>
-										<option value="Promedio">Promedio</option>
-										<option value="Atlético">Atlético</option>
-										<option value="Obeso">Obeso</option>
-										<option value="Alto y Grande">Alto y Grande</option>
-									</select>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="vello" style="font-weight: bold;">Vello Púbico</label>
-							    <select class="form-control" name="vello" id="vello" required>
-										<option value="">Seleccione</option>
-										<option value="Peludo">Peludo</option>
-										<option value="Recortado">Recortado</option>
-										<option value="Afeitado">Afeitado</option>
-										<option value="Calvo">Calvo</option>
-									</select>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="cabello" style="font-weight: bold;">Color de Cabello</label>
-							    <input type="text" name="cabello" id="cabello" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="ojos" style="font-weight: bold;">Color de Ojos</label>
-							    <input type="text" name="ojos" id="ojos" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="tattu" style="font-weight: bold;">Tattu</label>
-							    <select class="form-control" name="tattu" id="tattu" required>
-										<option value="">Seleccione</option>
-										<option value="Si">Si</option>
-										<option value="No">No</option>
-									</select>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="piercing" style="font-weight: bold;">Piercing</label>
-							    <select class="form-control" name="piercing" id="piercing" required>
-										<option value="">Seleccione</option>
-										<option value="Si">Si</option>
-										<option value="No">No</option>
-									</select>
-						    </div>
-						</div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-						<button type="submit" class="btn btn-success" id="submit_corporales1">Guardar</button>
-					</div>
-				</div>
-			</form>
-	  </div>
-	</div>
-<!---------------------------------------->
-
 <!--Modal documentos1-->
 	<div class="modal fade" id="documentos1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
@@ -409,29 +253,6 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
 				</div>
 			</div>
-		</div>
-	</div>
-<!---------------------------------------->
-
-<!--Modal fotos1-->
-	<div class="modal fade" id="fotos1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<form action="#" method="POST" id="fotos1_form" style="">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">VER FOTOS</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-						<div class="row" id="fotos1_respuesta"></div>
-					</div>
-					<div class="modal-footer">
-						<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-					</div>
-				</div>
-			</form>
 		</div>
 	</div>
 <!---------------------------------------->
@@ -686,7 +507,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 
 		$.ajax({
 			type: 'POST',
-			url: '../script/crud_modelos.php',
+			url: '../script/crud_nomina.php',
 			dataType: "JSON",
 			data: {
 				"pagina": pagina,
