@@ -278,9 +278,6 @@ if($condicion=='table1'){
 								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#documentos1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="far fa-folder-open"></i></button>
 								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#fotos1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-images"></i></button>
 								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#bancarios1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-money-check-alt"></i></button>
-								<!--
-								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#modificar1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="far fa-user"></i></button>
-								-->
 								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#empresa1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="far fa-building"></i></button>
 								<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#subirdocumentos1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');"><i class="fas fa-cloud-upload-alt"></i></button>
 			';
@@ -761,8 +758,8 @@ if($condicion=='subir_fotos1'){
 	$imagen_temporal = $_FILES['file']['tmp_name'];
 	$imagen_nombre = $_FILES['file']['name'];
 
-	if(file_exists('../resources/documentos/modelos/archivos/'.$id_modelos)){}else{
-    	mkdir('../resources/documentos/modelos/archivos/'.$id_modelos, 0777);
+	if(file_exists('../resources/documentos/archivos/'.$id_modelos)){}else{
+    	mkdir('../resources/documentos/archivos/'.$id_modelos, 0777);
 	}
 
 	/***************FUNCIONES****************/
@@ -805,13 +802,13 @@ if($condicion=='subir_fotos1'){
 	/*******************************************/
 
 	if($id_documentos==2){
-	    $location = "../resources/documentos/modelos/archivos/".$id_modelos."/documento_identidad.jpg";
+	    $location = "../resources/documentos/archivos/".$id_modelos."/documento_identidad.jpg";
 	}else if($id_documentos==8){
-	    $location = "../resources/documentos/modelos/archivos/".$id_modelos."/foto_cedula_con_cara.jpg";
+	    $location = "../resources/documentos/archivos/".$id_modelos."/foto_cedula_con_cara.jpg";
 	}else if($id_documentos==9){
-	    $location = "../resources/documentos/modelos/archivos/".$id_modelos."/foto_cedula_parte_frontal_cara.jpg";
+	    $location = "../resources/documentos/archivos/".$id_modelos."/foto_cedula_parte_frontal_cara.jpg";
 	}else if($id_documentos==10){
-	    $location = "../resources/documentos/modelos/archivos/".$id_modelos."/foto_cedula_parte_respaldo.jpg";
+	    $location = "../resources/documentos/archivos/".$id_modelos."/foto_cedula_parte_respaldo.jpg";
 	}else if($id_documentos==12){
 	    $imagen_nombre = $_FILES['file']['name'];
 	    $extension = explode(".", $imagen_nombre);
@@ -820,11 +817,11 @@ if($condicion=='subir_fotos1'){
 	        $extension='jpg';
 	    }
 
-	    $sql2 = "INSERT INTO modelos_documentos (id_documentos,id_usuarios,tipo,responsable,fecha_creacion) VALUES ('$id_documentos','$id_modelos','$extension',$responsable,'$fecha_creacion')";
+	    $sql2 = "INSERT INTO usuarios_documentos (id_documentos,id_usuarios,tipo,responsable,fecha_creacion) VALUES ('$id_documentos','$id_modelos','$extension',$responsable,'$fecha_creacion')";
 	    $registro1 = mysqli_query($conexion,$sql2);
-	    $id_modelos_documentos = mysqli_insert_id($conexion);
+	    $id_usuarios_documentos = mysqli_insert_id($conexion);
 
-	    $location = "../resources/documentos/modelos/archivos/".$id_modelos."/extras_".$id_modelos_documentos.".jpg";
+	    $location = "../resources/documentos/archivos/".$id_modelos."/extras_".$id_usuarios_documentos.".jpg";
 	}else{
 	    echo 'error';
 	    exit;
@@ -860,14 +857,14 @@ if($condicion=='subir_fotos1'){
 	    }
 	}
 
-	$sql3 = "DELETE FROM modelos_documentos WHERE id_documentos = ".$id_documentos." and id_modelos = ".$id_modelos;
+	$sql3 = "DELETE FROM usuarios_documentos WHERE id_documentos = ".$id_documentos." and id_modelos = ".$id_modelos;
     $eliminar1 = mysqli_query($conexion,$sql3);
 
     if($extension=='pdf'){}else if($extension=='jpg'){}else{
         $extension='jpg';
     }
 
-    $sql2 = "INSERT INTO modelos_documentos (id_documentos,id_usuarios,tipo,responsable,fecha_creacion) VALUES ('$id_documentos','$id_modelos','$extension',$responsable,'$fecha_creacion')";
+    $sql2 = "INSERT INTO usuarios_documentos (id_documentos,id_usuarios,tipo,responsable,fecha_creacion) VALUES ('$id_documentos','$id_modelos','$extension',$responsable,'$fecha_creacion')";
     $registro1 = mysqli_query($conexion,$sql2);
 }
 
@@ -876,15 +873,22 @@ if($condicion=='ver_documentos1'){
 	$html_firma1='';
 	$contador_extra1 = 1;
 	$modelo_id = $_POST['usuario_id'];
-	$sql2 = "SELECT * FROM modelos_documentos WHERE id_usuarios = ".$modelo_id;
+	$sql2 = "SELECT * FROM usuarios_documentos WHERE id_usuarios = ".$modelo_id;
 	$consulta3 = mysqli_query($conexion,$sql2);
-	while($row5 = mysqli_fetch_array($consulta3)) {
-		$modelos_documentos_id = $row5['id'];
-		$modelos_documentos_id_documento = $row5['id_documentos'];
-		$modelos_documentos_tipo = $row5['tipo'];
 
-		if($modelos_documentos_id_documento==1){
-			$sql3 = "SELECT * FROM documentos WHERE id = ".$modelos_documentos_id_documento;
+	$sqlu = "SELECT * FROM usuarios WHERE id = ".$modelo_id;
+	$consultau = mysqli_query($conexion,$sqlu);
+	while($rowu = mysqli_fetch_array($consultau)) {
+		$empresa_id = $rowu["id_empresa"];
+	}
+
+	while($row5 = mysqli_fetch_array($consulta3)) {
+		$usuarios_documentos_id = $row5['id'];
+		$usuarios_documentos_id_documento = $row5['id_documentos'];
+		$usuarios_documentos_tipo = $row5['tipo'];
+
+		if($usuarios_documentos_id_documento==1){
+			$sql3 = "SELECT * FROM documentos WHERE id = ".$usuarios_documentos_id_documento;
 			$consulta4 = mysqli_query($conexion,$sql3);
 			while($row6 = mysqli_fetch_array($consulta4)) {
 				$html_firma1.='
@@ -892,25 +896,24 @@ if($condicion=='ver_documentos1'){
 						<div>
 							<button type="button" id="documento1" value="0" onclick="bottonMostrar1(this.id,value);" class="btn btn-info">Firma</button>
 						</div>
-						<img id="div_documento1" src="../resources/documentos/modelos/archivos/'.$modelo_id.'/firma_digital.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px; display:none;">
+						<img id="div_documento1" src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/firma_digital.'.$usuarios_documentos_tipo.'" data-lightbox="image-1" data-title="-" style="width:250px;border-radius:5px; display:none;">
 						<hr style="background-color:black;">
 					</div>
 				';
 			}
 		}
 
-		if($modelos_documentos_id_documento==3){
-			$sql3 = "SELECT * FROM documentos WHERE id = ".$modelos_documentos_id_documento;
+		if($usuarios_documentos_id_documento==3){
+			$sql3 = "SELECT * FROM documentos WHERE id = ".$usuarios_documentos_id_documento;
 			$consulta4 = mysqli_query($conexion,$sql3);
 			while($row7 = mysqli_fetch_array($consulta4)) {
-				if($modelos_documentos_tipo=='pdf'){
+				if($usuarios_documentos_tipo=='pdf'){
 					$html_documentos1.= '
 						<div class="col-12 form-group text-center">
 							<div>
-								<!--<label for="" style="text-transform: capitalize;">Pasaporte</label>-->
 								<button type="button" id="documento2" value="0" onclick="bottonMostrar1(this.id,value);" class="btn btn-info">Pasaporte</button>
 							</div>
-							<embed id="div_documento2" src="../resources/documentos/modelos/archivos/'.$modelo_id.'/pasaporte.'.$modelos_documentos_tipo.'#toolbar=0" type="application/pdf" width="100%" height="300px" style="display:none;" />
+							<embed id="div_documento2" src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/pasaporte.'.$usuarios_documentos_tipo.'#toolbar=0" type="application/pdf" width="100%" height="300px" style="display:none;" />
 							<hr style="background-color:black;">
 						</div>
 					';
@@ -918,7 +921,7 @@ if($condicion=='ver_documentos1'){
 					$html_documentos1.='
 						<div class="col-12 form-group text-center">
 							<div><label for="" style="text-transform: capitalize;">Pasaporte</label></div>
-							<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/pasaporte.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+							<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/pasaporte.'.$usuarios_documentos_tipo.'" data-lightbox="image-1" data-title="-" style="width:250px;border-radius:5px;">
 							<hr style="background-color:black;">
 						</div>
 					';
@@ -926,18 +929,17 @@ if($condicion=='ver_documentos1'){
 			}
 		}
 
-		if($modelos_documentos_id_documento==4){
-			$sql3 = "SELECT * FROM documentos WHERE id = ".$modelos_documentos_id_documento;
+		if($usuarios_documentos_id_documento==4){
+			$sql3 = "SELECT * FROM documentos WHERE id = ".$usuarios_documentos_id_documento;
 			$consulta4 = mysqli_query($conexion,$sql3);
 			while($row6 = mysqli_fetch_array($consulta4)) {
-				if($modelos_documentos_tipo=='pdf'){
+				if($usuarios_documentos_tipo=='pdf'){
 					$html_documentos1.='
 						<div class="col-12 form-group text-center">
 							<div>
-								<!--<label for="" style="text-transform: capitalize;">RUT</label>-->
 								<button type="button" id="documento3" value="0" onclick="bottonMostrar1(this.id,value);" class="btn btn-info">RUT</button>
 							</div>
-							<embed id="div_documento3" src="../resources/documentos/modelos/archivos/'.$modelo_id.'/rut.'.$modelos_documentos_tipo.'#toolbar=0" type="application/pdf" width="100%" height="300px" style="display:none;" />
+							<embed id="div_documento3" src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/rut.'.$usuarios_documentos_tipo.'#toolbar=0" type="application/pdf" width="100%" height="300px" style="display:none;" />
 								<hr style="background-color:black;">
 						</div>
 					';
@@ -945,7 +947,7 @@ if($condicion=='ver_documentos1'){
 					$html_documentos1.='
 						<div class="col-12 form-group text-center">
 							<div><label for="" style="text-transform: capitalize;">RUT</label></div>
-							<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/rut.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+							<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/rut.'.$usuarios_documentos_tipo.'" data-lightbox="image-1" data-title="-" style="width:250px;border-radius:5px;">
 							<hr style="background-color:black;">
 						</div>
 					';
@@ -953,18 +955,18 @@ if($condicion=='ver_documentos1'){
 			}
 		}
 
-		if($modelos_documentos_id_documento==5){
-			$sql3 = "SELECT * FROM documentos WHERE id = ".$modelos_documentos_id_documento;
+		if($usuarios_documentos_id_documento==5){
+			$sql3 = "SELECT * FROM documentos WHERE id = ".$usuarios_documentos_id_documento;
 			$consulta4 = mysqli_query($conexion,$sql3);
 			while($row6 = mysqli_fetch_array($consulta4)) {
-				if($modelos_documentos_tipo=='pdf'){
+				if($usuarios_documentos_tipo=='pdf'){
 					$html_documentos1.='
 						<div class="col-12 form-group text-center">
 							<div>
 								<!--<label for="" style="text-transform: capitalize;">Certificación Bancaria</label>-->
 								<button type="button" id="documento4" value="0" onclick="bottonMostrar1(this.id,value);" class="btn btn-info">Certificación Bancaria</button>
 							</div>
-							<embed id="div_documento4" src="../resources/documentos/modelos/archivos/'.$modelo_id.'/certificacion_bancaria.'.$modelos_documentos_tipo.'#toolbar=0" type="application/pdf" width="100%" height="300px" style="display:none;" />
+							<embed id="div_documento4" src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/certificacion_bancaria.'.$usuarios_documentos_tipo.'#toolbar=0" type="application/pdf" width="100%" height="300px" style="display:none;" />
 											    	<hr style="background-color:black;">
 						</div>
 					';
@@ -972,7 +974,7 @@ if($condicion=='ver_documentos1'){
 					$html_documentos1.='
 						<div class="col-12 form-group text-center">
 							<div><label for="" style="text-transform: capitalize;">Certificación Bancaria</label></div>
-							<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/certificacion_bancaria.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+							<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/certificacion_bancaria.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
 							<hr style="background-color:black;">
 						</div>
 					';
@@ -980,18 +982,18 @@ if($condicion=='ver_documentos1'){
 			}
 		}
 
-		if($modelos_documentos_id_documento==6){
-			$sql3 = "SELECT * FROM documentos WHERE id = ".$modelos_documentos_id_documento;
+		if($usuarios_documentos_id_documento==6){
+			$sql3 = "SELECT * FROM documentos WHERE id = ".$usuarios_documentos_id_documento;
 			$consulta4 = mysqli_query($conexion,$sql3);
 			while($row6 = mysqli_fetch_array($consulta4)) {
-				if($modelos_documentos_tipo=='pdf'){
+				if($usuarios_documentos_tipo=='pdf'){
 					$html_documentos1.='
 						<div class="col-12 form-group text-center">
 							<div>
 								<!--<label for="" style="text-transform: capitalize;">EPS</label>-->
 								<button type="button" id="documento5" value="0" onclick="bottonMostrar1(this.id,value);" class="btn btn-info">EPS</button>
 							</div>
-							<embed id="div_documento5" src="../resources/documentos/modelos/archivos/'.$modelo_id.'/eps.'.$modelos_documentos_tipo.'#toolbar=0" type="application/pdf" width="100%" height="300px" style="display:none;"/>
+							<embed id="div_documento5" src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/eps.'.$usuarios_documentos_tipo.'#toolbar=0" type="application/pdf" width="100%" height="300px" style="display:none;"/>
 							<hr style="background-color:black;">
 						</div>
 					';
@@ -999,7 +1001,7 @@ if($condicion=='ver_documentos1'){
 					$html_documentos1.='
 						<div class="col-12 form-group text-center">
 							<div><label for="" style="text-transform: capitalize;">EPS</label></div>
-							<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/eps.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+							<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/eps.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
 							<hr style="background-color:black;">
 						</div>
 					';
@@ -1007,18 +1009,18 @@ if($condicion=='ver_documentos1'){
 			}
 		}
 
-		if($modelos_documentos_id_documento==7){
-			$sql3 = "SELECT * FROM documentos WHERE id = ".$modelos_documentos_id_documento;
+		if($usuarios_documentos_id_documento==7){
+			$sql3 = "SELECT * FROM documentos WHERE id = ".$usuarios_documentos_id_documento;
 			$consulta4 = mysqli_query($conexion,$sql3);
 			while($row6 = mysqli_fetch_array($consulta4)) {
-				if($modelos_documentos_tipo=='pdf'){
+				if($usuarios_documentos_tipo=='pdf'){
 					$html_documentos1.='
 						<div class="col-12 form-group text-center">
 							<div>
 								<!--<label for="" style="text-transform: capitalize;">Antecedentes Disciplinarios</label>-->
 								<button type="button" id="documento6" value="0" onclick="bottonMostrar1(this.id,value);" class="btn btn-info">Antecedentes Disciplinarios</button>
 							</div>
-							<embed id="div_documento6" src="../resources/documentos/modelos/archivos/'.$modelo_id.'/antecedentes_disciplinarios.'.$modelos_documentos_tipo.'#toolbar=0" type="application/pdf" width="100%" height="300px" style="display:none;" />
+							<embed id="div_documento6" src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/antecedentes_disciplinarios.'.$usuarios_documentos_tipo.'#toolbar=0" type="application/pdf" width="100%" height="300px" style="display:none;" />
 							<hr style="background-color:black;">
 						</div>
 					';
@@ -1026,7 +1028,7 @@ if($condicion=='ver_documentos1'){
 					$html_documentos1.='
 						<div class="col-12 form-group text-center">
 							<div><label for="" style="text-transform: capitalize;">Antecedentes Disciplinarios</label></div>
-							<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/antecedentes_disciplinarios.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+							<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/antecedentes_disciplinarios.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
 							<hr style="background-color:black;">
 						</div>
 					';
@@ -1065,59 +1067,66 @@ if($condicion=='ver_fotos1'){
 	$modelo_id = $_POST['variable'];
 	$contador_extra1 = 0;
 	$contador_fotos1 = 0;
-	$sql2 = "SELECT * FROM modelos_documentos WHERE id_usuarios = ".$modelo_id;
+
+	$sqlu = "SELECT * FROM usuarios WHERE id = ".$modelo_id;
+	$consultau = mysqli_query($conexion,$sqlu);
+	while($rowu = mysqli_fetch_array($consultau)) {
+		$empresa_id = $rowu["id_empresa"];
+	}
+
+	$sql2 = "SELECT * FROM usuarios_documentos WHERE id_usuarios = ".$modelo_id;
 	$consulta3 = mysqli_query($conexion,$sql2);
 	while($row5 = mysqli_fetch_array($consulta3)) {
-		$modelos_documentos_id = $row5['id'];
-		$modelos_documentos_id_documento = $row5['id_documentos'];
-		$modelos_documentos_tipo = $row5['tipo'];
-		$modelos_documentos_fecha_inicio = $row5['fecha_creacion'];
+		$usuarios_documentos_id = $row5['id'];
+		$usuarios_documentos_id_documento = $row5['id_documentos'];
+		$usuarios_documentos_tipo = $row5['tipo'];
+		$usuarios_documentos_fecha_inicio = $row5['fecha_creacion'];
 
-		if($modelos_documentos_id_documento==2){
+		if($usuarios_documentos_id_documento==2){
 			$html_documento_identidad.='
-				<div class="col-12 form-group text-center" id="documento_'.$modelos_documentos_id.'">
+				<div class="col-12 form-group text-center" id="documento_'.$usuarios_documentos_id.'">
 					<div><label for="" style="text-transform: capitalize;">Foto Documento de Identidad</label></div>
-					<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/documento_identidad.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
-					<p class="mt-3"><button type="button" class="btn btn-danger" id="'.$modelo_id.'" value="documento_identidad.'.$modelos_documentos_tipo.'" onclick="eliminar_foto1(this.id,value,'.$modelos_documentos_id.')">Borrar</button></p>
+					<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/documento_identidad.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
+					<p class="mt-3"><button type="button" class="btn btn-danger" id="'.$modelo_id.'" value="documento_identidad.'.$usuarios_documentos_tipo.'" onclick="eliminar_foto1(this.id,value,'.$usuarios_documentos_id.')">Borrar</button></p>
 					<hr style="background-color:black;">
 				</div>
 			';
 		}
 
-		if($modelos_documentos_id_documento==8){
+		if($usuarios_documentos_id_documento==8){
 			$html_foto_cedula_con_cara.='
-				<div class="col-12 form-group text-center" id="documento_'.$modelos_documentos_id.'">
+				<div class="col-12 form-group text-center" id="documento_'.$usuarios_documentos_id.'">
 					<div><label for="" style="text-transform: capitalize;">Foto cédula con cara</label></div>
-					<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/foto_cedula_con_cara.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
-					<p class="mt-3"><button type="button" class="btn btn-danger" id="'.$modelo_id.'" value="foto_cedula_con_cara.'.$modelos_documentos_tipo.'" onclick="eliminar_foto1(this.id,value,'.$modelos_documentos_id.')">Borrar</button></p>
+					<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/foto_cedula_con_cara.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
+					<p class="mt-3"><button type="button" class="btn btn-danger" id="'.$modelo_id.'" value="foto_cedula_con_cara.'.$usuarios_documentos_tipo.'" onclick="eliminar_foto1(this.id,value,'.$usuarios_documentos_id.')">Borrar</button></p>
 					<hr style="background-color:black;">
 				</div>
 			';
 		}
 
-		if($modelos_documentos_id_documento==9){
+		if($usuarios_documentos_id_documento==9){
 			$html_foto_cedula_parte_frontal_cara.='
-				<div class="col-12 form-group text-center" id="documento_'.$modelos_documentos_id.'">
+				<div class="col-12 form-group text-center" id="documento_'.$usuarios_documentos_id.'">
 					<div><label for="" style="text-transform: capitalize;">Foto cédula parte frontal con cara</label></div>
-					<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/foto_cedula_parte_frontal_cara.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
-					<p class="mt-3"><button type="button" class="btn btn-danger" id="'.$modelo_id.'" value="foto_cedula_parte_frontal_cara.'.$modelos_documentos_tipo.'" onclick="eliminar_foto1(this.id,value,'.$modelos_documentos_id.')">Borrar</button></p>
+					<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/foto_cedula_parte_frontal_cara.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
+					<p class="mt-3"><button type="button" class="btn btn-danger" id="'.$modelo_id.'" value="foto_cedula_parte_frontal_cara.'.$usuarios_documentos_tipo.'" onclick="eliminar_foto1(this.id,value,'.$usuarios_documentos_id.')">Borrar</button></p>
 					<hr style="background-color:black;">
 				</div>
 			';
 		}
 
-		if($modelos_documentos_id_documento==10){
+		if($usuarios_documentos_id_documento==10){
 			$html_foto_cedula_parte_respaldo.='
-				<div class="col-12 form-group text-center" id="documento_'.$modelos_documentos_id.'">
+				<div class="col-12 form-group text-center" id="documento_'.$usuarios_documentos_id.'">
 					<div><label for="" style="text-transform: capitalize;">Foto Cédula Parte Respaldo</label></div>
-					<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/foto_cedula_parte_respaldo.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
-					<p class="mt-3"><button type="button" class="btn btn-danger" id="'.$modelo_id.'" value="foto_cedula_parte_respaldo.'.$modelos_documentos_tipo.'" onclick="eliminar_foto1(this.id,value,'.$modelos_documentos_id.')">Borrar</button></p>
+					<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/foto_cedula_parte_respaldo.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
+					<p class="mt-3"><button type="button" class="btn btn-danger" id="'.$modelo_id.'" value="foto_cedula_parte_respaldo.'.$usuarios_documentos_tipo.'" onclick="eliminar_foto1(this.id,value,'.$usuarios_documentos_id.')">Borrar</button></p>
 					<hr style="background-color:black;">
 				</div>
 			';
 		}
 
-		if($modelos_documentos_id_documento==12){
+		if($usuarios_documentos_id_documento==12){
 			if($contador_extra1==0){
 				$html_extras1.='
 					<div class="col-12 form-group text-center">
@@ -1127,15 +1136,15 @@ if($condicion=='ver_fotos1'){
 			}
 			$html_extras1.='
 						<div class="mt-3 mb-3">
-							<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/extras_'.$modelos_documentos_id.'.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
-							<p class="mt-3" style="font-weight:bold;">('.$modelos_documentos_fecha_inicio.')</p>
-							<p><button type="button" class="btn btn-danger mt-1" value="'.$modelos_documentos_id.'" id="'.$modelo_id.'" onclick="borrar_extra(this.value,this.id);">Borrar</button></p>
+							<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/extras_'.$usuarios_documentos_id.'.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
+							<p class="mt-3" style="font-weight:bold;">('.$usuarios_documentos_fecha_inicio.')</p>
+							<p><button type="button" class="btn btn-danger mt-1" value="'.$usuarios_documentos_id.'" id="'.$modelo_id.'" onclick="borrar_extra(this.value,this.id);">Borrar</button></p>
 						</div>
 						<br>
 			';
 		}
 
-		if($modelos_documentos_id_documento==13){
+		if($usuarios_documentos_id_documento==13){
 			if($contador_fotos1==0){
 				$html_fotos1.='
 					<div class="col-12 form-group text-center">
@@ -1145,9 +1154,9 @@ if($condicion=='ver_fotos1'){
 			}
 			$html_fotos1.='
 						<div class="mt-3 mb-3">
-							<img src="../resources/documentos/modelos/archivos/'.$modelo_id.'/sensuales_'.$modelos_documentos_id.'.jpg" style="width:250px;border-radius:5px;">
-							<p class="mt-3" style="font-weight:bold;">('.$modelos_documentos_fecha_inicio.')</p>
-							<p><button type="button" class="btn btn-danger mt-1" value="'.$modelos_documentos_id.'" id="'.$modelo_id.'" onclick="borrar_sensual(this.value,this.id);">Borrar</button></p>
+							<img src="../resources/documentos/'.$empresa_id.'/archivos/'.$modelo_id.'/sensuales_'.$usuarios_documentos_id.'.jpg" style="width:250px;border-radius:5px;">
+							<p class="mt-3" style="font-weight:bold;">('.$usuarios_documentos_fecha_inicio.')</p>
+							<p><button type="button" class="btn btn-danger mt-1" value="'.$usuarios_documentos_id.'" id="'.$modelo_id.'" onclick="borrar_sensual(this.value,this.id);">Borrar</button></p>
 						</div>
 						<br>
 			';
@@ -1473,6 +1482,7 @@ if($condicion=="modelos_cuentas_estatus1"){
 if($condicion=='consulta1'){
 	$usuario_id = $_POST["usuario_id"];
 	$html_documentos1='';
+	$html_documentos2='';
 	$html_fotos1='';
 	$html_fotos2='';
 	$relleno_fotos2='';
@@ -1537,14 +1547,20 @@ if($condicion=='consulta1'){
 		$emergencia_telefono = $row1["emergencia_telefono"];
 		$emergencia_parentesco = $row1["emergencia_parentesco"];
 
-		$sql2 = "SELECT * FROM modelos_documentos WHERE (id_documentos = 1 or id_documentos = 2 or id_documentos = 3 or id_documentos = 4 or id_documentos = 5 or id_documentos = 6 or id_documentos = 7 or id_documentos = 8 or id_documentos = 9 or id_documentos = 10 or id_documentos = 11 or id_documentos = 14) and id_usuarios = ".$usuario_id;
+		$sqlu = "SELECT * FROM usuarios WHERE id = ".$usuario_id;
+		$consultau = mysqli_query($conexion,$sqlu);
+		while($rowu = mysqli_fetch_array($consultau)) {
+			$empresa_id = $rowu["id_empresa"];
+		}
+
+		$sql2 = "SELECT * FROM usuarios_documentos WHERE (id_documentos = 1 or id_documentos = 2 or id_documentos = 3 or id_documentos = 4 or id_documentos = 5 or id_documentos = 6 or id_documentos = 7 or id_documentos = 8 or id_documentos = 9 or id_documentos = 10 or id_documentos = 11 or id_documentos = 14) and id_usuarios = ".$usuario_id;
 		$proceso2 = mysqli_query($conexion,$sql2);
 		$contador2 = mysqli_num_rows($proceso2);
 		if($contador2>=1){
 			while($row2 = mysqli_fetch_array($proceso2)) {
-				$modelos_documentos_id = $row2['id'];
+				$usuarios_documentos_id = $row2['id'];
 				$id_documento = $row2['id_documentos'];
-				$modelos_documentos_tipo = $row2['tipo'];
+				$usuarios_documentos_tipo = $row2['tipo'];
 
 				$sql3 = "SELECT * FROM documentos WHERE id = ".$id_documento;
 				$proceso3 = mysqli_query($conexion,$sql3);
@@ -1553,27 +1569,73 @@ if($condicion=='consulta1'){
 					$documento_ruta = $row3["ruta"];
 				}
 
-				if($modelos_documentos_tipo=='pdf' or $modelos_documentos_tipo=='PDF'){
+				/*******************PARA MODIFICABLES********************/
+				if($usuarios_documentos_tipo=='pdf' or $usuarios_documentos_tipo=='PDF'){
 					$html_documentos1 .= '
-						<div class="col-12 form-group text-center" id="divmacro_documento_'.$modelos_documentos_id.'">
+						<div class="col-12 form-group text-center" id="divmacro_documento_'.$usuarios_documentos_id.'">
 							<p>
-								<button type="button" id="documento_'.$modelos_documentos_id.'" value="1" onclick="documento_mostrar1(this.id,value);" class="btn btn-info">Ver '.$documento_nombre.'</button>
+								<button type="button" id="documento_'.$usuarios_documentos_id.'" value="1" onclick="documento_mostrar1(this.id,value);" class="btn btn-info">Ver '.$documento_nombre.'</button>
 							</p>
-							<embed id="div_documento_'.$modelos_documentos_id.'" src="../resources/documentos/modelos/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$modelos_documentos_tipo.'" type="application/pdf" width="100%" height="300px" style="display: none;">
+							<embed id="div_documento_'.$usuarios_documentos_id.'" src="../resources/documentos/'.$empresa_id.'/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$usuarios_documentos_tipo.'" type="application/pdf" width="100%" height="300px" style="display: none;">
+							<br><br>
+							<button type="button" class="btn btn-danger" onclick="eliminar_documento1('.$usuarios_documentos_id.');">Eliminar '.$documento_nombre.'</button>
 							<hr style="background-color:black;">
 						</div>
 					';
 				}else{
 					$html_documentos1 .= '
-						<div class="col-12 form-group text-center">
-							<p>'.$documento_nombre.'</p>
-							<img id="div_documento1" src="../resources/documentos/modelos/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+						<div class="col-12 form-group text-center" id="divmacro_documento_'.$usuarios_documentos_id.'">
+							<p style="font-weight: bold; font-size: 20px;">'.$documento_nombre.'</p>
+							<a href="../resources/documentos/'.$empresa_id.'/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$usuarios_documentos_tipo.'" data-lightbox="image-'.$usuario_id.'" data-title="'.$documento_nombre.'">
+								<img id="div_documento1" src="../resources/documentos/'.$empresa_id.'/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
+							</a>
+							<br><br>
+							<button type="button" class="btn btn-danger" onclick="eliminar_documento1('.$usuarios_documentos_id.');">Eliminar '.$documento_nombre.'</button>
 							<hr style="background-color:black;">
 						</div>
 					';
 				}
+				/********************************************************/
+
+				/*****************PARA SOLO VER*************************/
+				$usuarios_documentos_id = $row2['id'];
+				$id_documento = $row2['id_documentos'];
+				$usuarios_documentos_tipo = $row2['tipo'];
+
+				$sql3 = "SELECT * FROM documentos WHERE id = ".$id_documento;
+				$proceso3 = mysqli_query($conexion,$sql3);
+				while($row3 = mysqli_fetch_array($proceso3)) {
+					$documento_nombre = $row3["nombre"];
+					$documento_ruta = $row3["ruta"];
+				}
+
+				if($usuarios_documentos_tipo=='pdf' or $usuarios_documentos_tipo=='PDF'){
+					$html_documentos2 .= '
+						<div class="col-12 form-group text-center" id="divmacro_documento_'.$usuarios_documentos_id.'">
+							<p>
+								<button type="button" id="documento_'.$usuarios_documentos_id.'" value="1" onclick="documento_mostrar1(this.id,value);" class="btn btn-info">Ver '.$documento_nombre.'</button>
+							</p>
+							<embed id="div_documento_'.$usuarios_documentos_id.'" src="../resources/documentos/'.$empresa_id.'/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$usuarios_documentos_tipo.'" type="application/pdf" width="100%" height="300px" style="display: none;">
+							<br><br>
+							<hr style="background-color:black;">
+						</div>
+					';
+				}else{
+					$html_documentos2 .= '
+						<div class="col-12 form-group text-center" id="divmacro_documento_'.$usuarios_documentos_id.'">
+							<p style="font-weight: bold; font-size: 20px;">'.$documento_nombre.'</p>
+							<a href="../resources/documentos/'.$empresa_id.'/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$usuarios_documentos_tipo.'" data-lightbox="image-'.$usuario_id.'" data-title="'.$documento_nombre.'">
+								<img id="div_documento1" src="../resources/documentos/'.$empresa_id.'/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
+							</a>
+							<br><br>
+							<hr style="background-color:black;">
+						</div>
+					';
+				}
+				/*******************************************************/
 
 			}
+
 		}else if($contador2==0){
 			$html_documentos1 = '
 				<div class="col-12 form-group text-center">
@@ -1581,16 +1643,23 @@ if($condicion=='consulta1'){
 					<hr style="background-color:black;">
 				</div>
 			';
+
+			$html_documentos2 = '
+				<div class="col-12 form-group text-center">
+					<div><label for="" style="text-transform: capitalize;">Sin Documentos cargados</label></div>
+					<hr style="background-color:black;">
+				</div>
+			';
 		}
 
-		$sql4 = "SELECT * FROM modelos_documentos WHERE (id_documentos = 12 or id_documentos = 13) and id_usuarios = ".$usuario_id;
+		$sql4 = "SELECT * FROM usuarios_documentos WHERE (id_documentos = 12 or id_documentos = 13) and id_usuarios = ".$usuario_id;
 		$proceso4 = mysqli_query($conexion,$sql4);
 		$contador4 = mysqli_num_rows($proceso4);
 		if($contador4>=1){
 			while($row2 = mysqli_fetch_array($proceso4)) {
-				$modelos_documentos_id = $row2['id'];
+				$usuarios_documentos_id = $row2['id'];
 				$id_documento = $row2['id_documentos'];
-				$modelos_documentos_tipo = $row2['tipo'];
+				$usuarios_documentos_tipo = $row2['tipo'];
 
 				$sql3 = "SELECT * FROM documentos WHERE id = ".$id_documento;
 				$proceso3 = mysqli_query($conexion,$sql3);
@@ -1602,7 +1671,7 @@ if($condicion=='consulta1'){
 				$html_fotos1 .= '
 					<div class="col-12 form-group text-center">
 						<p>'.$documento_nombre.'</p>
-						<img id="div_documento1" src="../resources/documentos/modelos/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+						<img id="div_documento1" src="../resources/documentos/'.$empresa_id.'/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
 						<hr style="background-color:black;">
 					</div>
 				';
@@ -1610,7 +1679,7 @@ if($condicion=='consulta1'){
 
 			$relleno_fotos2 = '
 				<div class="col-12 text-center">
-					<img id="div_documento1" src="../resources/documentos/modelos/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$modelos_documentos_tipo.'" style="width:250px;border-radius:5px;">
+					<img id="div_documento1" src="../resources/documentos/'.$empresa_id.'/archivos/'.$usuario_id.'/'.$documento_ruta.'.'.$usuarios_documentos_tipo.'" style="width:250px;border-radius:5px;">
 					<hr style="background-color:black;">
 				</div>
 			';
@@ -1679,6 +1748,7 @@ if($condicion=='consulta1'){
 		"sede_nombre"	=> $sede_nombre,
 
 		"html_documentos1" => $html_documentos1,
+		"html_documentos2" => $html_documentos2,
 		"html_fotos1" => $html_fotos1,
 		"html_fotos2" => $html_fotos2,
 
@@ -1842,8 +1912,14 @@ if($condicion=='subirdocumentos1'){
 	$imagen_temporal = $_FILES['file']['tmp_name'];
 	$imagen_nombre = $_FILES['file']['name'];
 
-	if(file_exists('../resources/documentos/modelos/archivos/'.$usuario_id)){}else{
-	    mkdir('../resources/documentos/modelos/archivos/'.$usuario_id, 0777);
+	$sqlu = "SELECT * FROM usuarios WHERE id = ".$usuario_id;
+	$consultau = mysqli_query($conexion,$sqlu);
+	while($rowu = mysqli_fetch_array($consultau)) {
+		$empresa_id = $rowu["id_empresa"];
+	}
+
+	if(file_exists('../resources/documentos/'.$empresa_id.'/archivos/'.$usuario_id)){}else{
+	    mkdir('../resources/documentos/'.$empresa_id.'/archivos/'.$usuario_id, 0777);
 	}
 
 	$sql1 = "SELECT * FROM documentos WHERE id = ".$id_documento;
@@ -1866,7 +1942,7 @@ if($condicion=='subirdocumentos1'){
 		exit;
 	}
 
-	$location = "../resources/documentos/modelos/archivos/".$usuario_id."/".$documento_nombre.".".$extension;
+	$location = "../resources/documentos/".$empresa_id."/archivos/".$usuario_id."/".$documento_nombre.".".$extension;
 
 	if($extension=='pdf'){
 		@unlink($location);
@@ -1891,14 +1967,14 @@ if($condicion=='subirdocumentos1'){
 	    }
 	}
 
-	$sql2 = "DELETE FROM modelos_documentos WHERE id_documentos = ".$id_documento." and id_usuarios = ".$usuario_id;
+	$sql2 = "DELETE FROM usuarios_documentos WHERE id_documentos = ".$id_documento." and id_usuarios = ".$usuario_id;
 	$proceso2 = mysqli_query($conexion,$sql2);
 
 	if($extension!='pdf' and $extension!='jpg' and $extension!='png' and $extension!='jpeg'){
 		$extension='jpg';
 	}
 
-	$sql3 = "INSERT INTO modelos_documentos (id_documentos,id_usuarios,tipo,responsable,fecha_creacion) VALUES ($id_documento,$usuario_id,'$extension',$responsable,'$fecha_creacion')";
+	$sql3 = "INSERT INTO usuarios_documentos (id_documentos,id_usuarios,tipo,responsable,fecha_creacion) VALUES ($id_documento,$usuario_id,'$extension',$responsable,'$fecha_creacion')";
 	$proceso3 = mysqli_query($conexion,$sql3);
 
 	$datos = [
@@ -1914,7 +1990,7 @@ if($condicion=='subirdocumentos1'){
 if($condicion=='eliminar_documento1'){
 	$id = $_POST['id'];
 
-	$sql1 = "SELECT mdoc.id as id, mdoc.id_documentos as mdoc_id_documentos, mdoc.id_usuarios as mdoc_id_usuarios, mdoc.tipo as mdoc_tipo, doc.nombre as doc_nombre, doc.ruta as doc_ruta FROM modelos_documentos mdoc 
+	$sql1 = "SELECT mdoc.id as id, mdoc.id_documentos as mdoc_id_documentos, mdoc.id_usuarios as mdoc_id_usuarios, mdoc.tipo as mdoc_tipo, doc.nombre as doc_nombre, doc.ruta as doc_ruta FROM usuarios_documentos mdoc 
 	INNER JOIN documentos doc 
 	ON mdoc.id_documentos = doc.id 
 	WHERE mdoc.id = ".$id;
@@ -1924,12 +2000,19 @@ if($condicion=='eliminar_documento1'){
 		$usuario_id = $row1['mdoc_id_usuarios'];
 		$extension = $row1['mdoc_tipo'];
 		$documento_nombre = $row1['doc_nombre'];
+		$ruta = $row1['doc_ruta'];
 	}
 
-	$location = "../resources/documentos/modelos/archivos/".$usuario_id."/".$documento_nombre.".".$extension;
+	$sqlu = "SELECT * FROM usuarios WHERE id = ".$usuario_id;
+	$consultau = mysqli_query($conexion,$sqlu);
+	while($rowu = mysqli_fetch_array($consultau)) {
+		$empresa_id = $rowu["id_empresa"];
+	}
+
+	$location = "../resources/documentos/".$empresa_id."/archivos/".$usuario_id."/".$ruta.".".$extension;
 	@unlink($location);
 
-	$sql2 = "DELETE FROM modelos_documentos WHERE id = ".$id;
+	$sql2 = "DELETE FROM usuarios_documentos WHERE id = ".$id;
 	$proceso2 = mysqli_query($conexion,$sql2);
 
 	$datos = [
@@ -1937,6 +2020,7 @@ if($condicion=='eliminar_documento1'){
 		"msg"	=> "Se ha eliminado el documento satisfactoriamente",
 		"sql1"	=> $sql1,
 		"sql2"	=> $sql2,
+		"location"	=> $location,
 	];
 	echo json_encode($datos);
 }

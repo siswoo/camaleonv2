@@ -13,6 +13,7 @@ if(@$_SESSION["camaleonapp_id"]=='' or @$_SESSION["camaleonapp_id"]==null){
     <link rel="stylesheet" href="../css/bootstrap.css">
     <link rel="stylesheet" href="../css/dataTables.bootstrap4.min.css">
     <link href="../resources/fontawesome/css/all.css" rel="stylesheet">
+    <link href="../resources/lightbox/src/css/lightbox.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/header.css">
     <title>Camaleon Sistem</title>
   </head>
@@ -364,7 +365,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					</button>
 				</div>
 				<div class="modal-body">
-					<div class="row" id="documentos1_respuesta"></div>
+					<div class="row" id="documentos2_respuesta"></div>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
@@ -617,6 +618,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 <script src="../js/bootstrap.js"></script>
 <script src="../js/jquery.dataTables.min.js"></script>
 <script src="../js/dataTables.bootstrap4.min.js"></script>
+<script src="../resources/lightbox/src/js/lightbox.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
 <script>
@@ -724,7 +726,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					$('#sede').val(respuesta["sede"]);
 					$('#turno').val(respuesta["turno"]);
 
-					$('#documentos1_respuesta').html(respuesta["html_documentos1"]);
+					$('#documentos2_respuesta').html(respuesta["html_documentos2"]);
 					$('#fotos1_respuesta').html(respuesta["html_fotos1"]);
 
 					$('#banco_cedula').val(respuesta["banco_cedula"]);

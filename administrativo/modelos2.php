@@ -13,6 +13,7 @@ if(@$_SESSION["camaleonapp_id"]=='' or @$_SESSION["camaleonapp_id"]==null){
     <link rel="stylesheet" href="../css/bootstrap.css">
     <link rel="stylesheet" href="../css/dataTables.bootstrap4.min.css">
     <link href="../resources/fontawesome/css/all.css" rel="stylesheet">
+    <link href="../resources/lightbox/src/css/lightbox.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/header.css">
     <title>Camaleon Sistem</title>
   </head>
@@ -649,6 +650,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 <script src="../js/bootstrap.js"></script>
 <script src="../js/jquery.dataTables.min.js"></script>
 <script src="../js/dataTables.bootstrap4.min.js"></script>
+<script src="../resources/lightbox/src/js/lightbox.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
 <script>

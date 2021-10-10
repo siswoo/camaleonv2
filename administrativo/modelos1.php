@@ -13,6 +13,7 @@ if(@$_SESSION["camaleonapp_id"]=='' or @$_SESSION["camaleonapp_id"]==null){
     <link rel="stylesheet" href="../css/bootstrap.css">
     <link rel="stylesheet" href="../css/dataTables.bootstrap4.min.css">
     <link href="../resources/fontawesome/css/all.css" rel="stylesheet">
+    <link href="../resources/lightbox/src/css/lightbox.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/header.css">
     <title>Camaleon Sistem</title>
   </head>
@@ -458,7 +459,6 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 							    	<option value="8">Foto Cédula con Cara</option>
 							    	<option value="9">Foto Cédula Parte Frontal Cara</option>
 							    	<option value="10">Foto Cédula Parte Respaldo</option>
-							    	<!--<option value="12">Extras</option>-->
 							    </select>
 							</div>
 							<input type="file" class="form-control" name="subirdocumentos1_file1" id="subirdocumentos1_file1" style="margin-left: 18px; margin-right: 16px;" required>
@@ -657,6 +657,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 <script src="../js/bootstrap.js"></script>
 <script src="../js/jquery.dataTables.min.js"></script>
 <script src="../js/dataTables.bootstrap4.min.js"></script>
+<script src="../resources/lightbox/src/js/lightbox.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
 <script>
@@ -1145,11 +1146,13 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
             success: function(respuesta) {
 							console.log(respuesta);
 							if(respuesta["estatus"]=="ok"){
+								$('#id_documento').val("");
+								$('#subirdocumentos1_file1').val("");
 								Swal.fire({
 									title: 'Correcto!',
 									text: respuesta["msg"],
 									icon: 'success',
-								})
+								});
 							}else if(respuesta["estatus"]=="error"){
 								Swal.fire({
 									title: 'Error',
@@ -1176,7 +1179,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 		}
 	}
 
-	function eliminar_documento(id){
+	function eliminar_documento1(id){
 		Swal.fire({
 			title: 'Estas seguro?',
 			text: "Luego no podrás revertir esta acción",

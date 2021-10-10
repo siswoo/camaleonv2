@@ -13,6 +13,7 @@ if(@$_SESSION["camaleonapp_id"]=='' or @$_SESSION["camaleonapp_id"]==null){
     <link rel="stylesheet" href="../css/bootstrap.css">
     <link rel="stylesheet" href="../css/dataTables.bootstrap4.min.css">
     <link href="../resources/fontawesome/css/all.css" rel="stylesheet">
+    <link href="../resources/lightbox/src/css/lightbox.css" rel="stylesheet" />
     <link rel="stylesheet" href="../css/header.css">
     <title>Camaleon Sistem</title>
   </head>
@@ -88,7 +89,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 
 <!------------------------>
 <input type="hidden" name="usuario_id" id="usuario_id">
-<input type="hidden" name="modelo_id" id="modelo_id">
+<input type="hidden" name="nomina_id" id="nomina_id">
 <!------------------------>
 
 <!-- Modal personales1 -->
@@ -104,23 +105,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					</div>
 					<div class="modal-body">
 					    <div class="row">
-						    <div class="col-12 form-group form-check">
-							    <label for="nombre1" style="font-weight: bold;">Primer Nombre</label>
-							    <input type="text" name="nombre1" id="nombre1" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="nombre2" style="font-weight: bold;">Segundo Nombre</label>
-							    <input type="text" name="nombre2" id="nombre2" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="apellido1" style="font-weight: bold;">Primer Apellido</label>
-							    <input type="text" name="apellido1" id="apellido1" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
-							    <label for="apellido2" style="font-weight: bold;">Segundo Apellido</label>
-							    <input type="text" name="apellido2" id="apellido2" class="form-control" required>
-						    </div>
-						    <div class="col-12 form-group form-check">
+					    	<div class="col-12 form-group form-check">
 							    <label for="documento_tipo" style="font-weight: bold;">Documento Tipo</label>
 							    <select class="form-control" name="documento_tipo" id="documento_tipo" required>
 							    	<option value="">Seleccione</option>
@@ -142,12 +127,32 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 							    <input type="text" name="documento_numero" id="documento_numero" class="form-control" required>
 						    </div>
 						    <div class="col-12 form-group form-check">
+							    <label for="nombre1" style="font-weight: bold;">Primer Nombre</label>
+							    <input type="text" name="nombre1" id="nombre1" class="form-control" required>
+						    </div>
+						    <div class="col-12 form-group form-check">
+							    <label for="nombre2" style="font-weight: bold;">Segundo Nombre</label>
+							    <input type="text" name="nombre2" id="nombre2" class="form-control" required>
+						    </div>
+						    <div class="col-12 form-group form-check">
+							    <label for="apellido1" style="font-weight: bold;">Primer Apellido</label>
+							    <input type="text" name="apellido1" id="apellido1" class="form-control" required>
+						    </div>
+						    <div class="col-12 form-group form-check">
+							    <label for="apellido2" style="font-weight: bold;">Segundo Apellido</label>
+							    <input type="text" name="apellido2" id="apellido2" class="form-control" required>
+						    </div>
+						    <div class="col-12 form-group form-check">
 							    <label for="correo" style="font-weight: bold;">Correo Personal</label>
 							    <input type="email" name="correo" id="correo" class="form-control" required>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="telefono" style="font-weight: bold;">Teléfono</label>
 							    <input type="text" name="telefono" id="telefono" class="form-control" required>
+						    </div>
+						    <div class="col-12 form-group form-check">
+							    <label for="fecha_nacimiento" style="font-weight: bold;">Fecha de Nacimiento</label>
+							    <input type="date" name="fecha_nacimiento" id="fecha_nacimiento" class="form-control">
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="genero" style="font-weight: bold;">Género</label>
@@ -214,21 +219,21 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					    <div class="row">
 						    <div class="col-12 form-group form-check">
 							    <label for="emergencia_nombre" style="font-weight: bold;">Nombre</label>
-							    <input type="text" name="emergencia_nombre" id="emergencia_nombre" class="form-control" required>
+							    <input type="text" name="emergencia_nombre" id="emergencia_nombre" class="form-control" disabled>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="emergencia_telefono" style="font-weight: bold;">Teléfono</label>
-							    <input type="text" name="emergencia_telefono" id="emergencia_telefono" class="form-control" required>
+							    <input type="text" name="emergencia_telefono" id="emergencia_telefono" class="form-control" disabled>
 						    </div>
 						    <div class="col-12 form-group form-check">
 							    <label for="emergencia_parentesco" style="font-weight: bold;">Parentesco</label>
-							    <input type="text" name="emergencia_parentesco" id="emergencia_parentesco" class="form-control" required>
+							    <input type="text" name="emergencia_parentesco" id="emergencia_parentesco" class="form-control" disabled>
 						    </div>
 					    </div>
 					</div>
 					<div class="modal-footer">
 				        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				        <button type="submit" class="btn btn-success" id="submit_emergencia1">Guardar</button>
+				        <!--<button type="submit" class="btn btn-success" id="submit_emergencia1">Guardar</button>-->
 			      	</div>
 		      	</form>
 	    	</div>
@@ -478,6 +483,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 <script src="../js/bootstrap.js"></script>
 <script src="../js/jquery.dataTables.min.js"></script>
 <script src="../js/dataTables.bootstrap4.min.js"></script>
+<script src="../resources/lightbox/src/js/lightbox.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
 
 <script>
@@ -541,12 +547,12 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 	  	$('#myInput').trigger('focus')
 	});
 
-	function editar1(modelo_id,usuario_id){
-		$('#modelo_id').val(modelo_id);
+	function editar1(nomina_id,usuario_id){
+		$('#nomina_id').val(nomina_id);
 		$('#usuario_id').val(usuario_id);
 		$.ajax({
 			type: 'POST',
-			url: '../script/crud_modelos.php',
+			url: '../script/crud_nomina.php',
 			dataType: "JSON",
 			data: {
 				"usuario_id": usuario_id,
@@ -610,7 +616,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 
 	$("#personales1_form").on("submit", function(e){
 		e.preventDefault();
-		var modelo_id = $('#modelo_id').val();
+		var nomina_id = $('#nomina_id').val();
 		var usuario_id = $('#usuario_id').val();
 		var nombre1 = $('#nombre1').val();
 		var nombre2 = $('#nombre2').val();
@@ -620,6 +626,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 		var documento_numero = $('#documento_numero').val();
 		var correo = $('#correo').val();
 		var telefono = $('#telefono').val();
+		var fecha_nacimiento = $('#fecha_nacimiento').val();
 		var genero = $('#genero').val();
 		var direccion = $('#direccion').val();
 		var pais = $('#pais').val();
@@ -628,10 +635,10 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 
 		$.ajax({
 			type: 'POST',
-			url: '../script/crud_modelos.php',
+			url: '../script/crud_nomina.php',
 			dataType: "JSON",
 			data: {
-				"modelo_id": modelo_id,
+				"nomina_id": nomina_id,
 				"usuario_id": usuario_id,
 				"nombre1": nombre1,
 				"nombre2": nombre2,
@@ -641,58 +648,11 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 				"documento_numero": documento_numero,
 				"correo": correo,
 				"telefono": telefono,
+				"fecha_nacimiento": fecha_nacimiento,
 				"genero": genero,
 				"direccion": direccion,
 				"pais": pais,
-				"sede": sede,
-				"turno": turno,
 				"condicion": "modificar_personales1",
-			},
-
-			success: function(respuesta) {
-				//console.log(respuesta);
-
-				if(respuesta["estatus"]=="ok"){
-					Swal.fire({
-						title: 'Correcto!',
-						text: respuesta["msg"],
-						icon: 'success',
-					})
-				}else if(respuesta["estatus"]=="error"){
-					Swal.fire({
-						title: 'Error',
-						text: respuesta["msg"],
-						icon: 'error',
-					})
-				}
-
-			},
-
-			error: function(respuesta) {
-				console.log(respuesta["responseText"]);
-			}
-		});
-	});
-
-	$("#emergencia1_form").on("submit", function(e){
-		e.preventDefault();
-		var modelo_id = $('#modelo_id').val();
-		var usuario_id = $('#usuario_id').val();
-		var emergencia_nombre = $('#emergencia_nombre').val();
-		var emergencia_telefono = $('#emergencia_telefono').val();
-		var emergencia_parentesco = $('#emergencia_parentesco').val();
-
-		$.ajax({
-			type: 'POST',
-			url: '../script/crud_modelos.php',
-			dataType: "JSON",
-			data: {
-				"modelo_id": modelo_id,
-				"usuario_id": usuario_id,
-				"emergencia_nombre": emergencia_nombre,
-				"emergencia_telefono": emergencia_telefono,
-				"emergencia_parentesco": emergencia_parentesco,
-				"condicion": "modificar_emergencia1",
 			},
 
 			success: function(respuesta) {
@@ -720,43 +680,25 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 		});
 	});
 
-	$("#corporales1_form").on("submit", function(e){
+	$("#emergencia1_form").on("submit", function(e){
 		e.preventDefault();
+		var nomina_id = $('#nomina_id').val();
 		var usuario_id = $('#usuario_id').val();
-		var altura = $('#altura').val();
-		var peso = $('#peso').val();
-		var pene = $('#pene').val();
-		var sosten = $('#sosten').val();
-		var busto = $('#busto').val();
-		var cintura = $('#cintura').val();
-		var caderas = $('#caderas').val();
-		var cuerpo = $('#cuerpo').val();
-		var vello = $('#vello').val();
-		var cabello = $('#cabello').val();
-		var ojos = $('#ojos').val();
-		var tattu = $('#tattu').val();
-		var piercing = $('#piercing').val();
+		var emergencia_nombre = $('#emergencia_nombre').val();
+		var emergencia_telefono = $('#emergencia_telefono').val();
+		var emergencia_parentesco = $('#emergencia_parentesco').val();
 
 		$.ajax({
 			type: 'POST',
-			url: '../script/crud_modelos.php',
+			url: '../script/crud_nomina.php',
 			dataType: "JSON",
 			data: {
+				"nomina_id": nomina_id,
 				"usuario_id": usuario_id,
-				"altura": altura,
-				"peso": peso,
-				"pene": pene,
-				"sosten": sosten,
-				"busto": busto,
-				"cintura": cintura,
-				"caderas": caderas,
-				"cuerpo": cuerpo,
-				"vello": vello,
-				"cabello": cabello,
-				"ojos": ojos,
-				"tattu": tattu,
-				"piercing": piercing,
-				"condicion": "modificar_corporales1",
+				"emergencia_nombre": emergencia_nombre,
+				"emergencia_telefono": emergencia_telefono,
+				"emergencia_parentesco": emergencia_parentesco,
+				"condicion": "modificar_emergencia1",
 			},
 
 			success: function(respuesta) {
@@ -844,7 +786,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 
 		$.ajax({
 			type: 'POST',
-			url: '../script/crud_modelos.php',
+			url: '../script/crud_nomina.php',
 			dataType: "JSON",
 			data: {
 				"usuario_id": usuario_id,
@@ -997,7 +939,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 		}
 	}
 
-	function eliminar_documento(id){
+	function eliminar_documento1(id){
 		Swal.fire({
 			title: 'Estas seguro?',
 			text: "Luego no podrás revertir esta acción",
@@ -1012,7 +954,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 			if (result.value) {
 				$.ajax({
 					type: 'POST',
-					url: '../script/crud_modelos.php',
+					url: '../script/crud_nomina.php',
 					dataType: "JSON",
 					data: {
 						"id": id,

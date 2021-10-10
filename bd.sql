@@ -345,7 +345,9 @@ INSERT INTO modulos_sub (nombre,url,id_modulos,principal,estatus,responsable,id_
 ('DISEÑO GRAFICO','disenografico.php',4,0,1,1,'Nomina','2021-08-11'),
 ('DISEÑO DE CONTENIDO','disenodecontenido.php',4,0,1,1,'Nomina','2021-08-11'),
 
-('MIS DATOS','../welcome/index.php',1,1,1,1,'Modelo','2021-09-03');
+('MIS DATOS','../welcome/index.php',1,1,1,1,'Modelo','2021-09-03'),
+
+('PROGRAMACION','programacion.php',2,1,1,1,'Nomina','2021-10-06');
 
 DROP TABLE IF EXISTS modulos_multiple;
 CREATE TABLE modulos_multiple (
@@ -401,7 +403,9 @@ INSERT INTO modulos_multiple (nombre,url,id_sub_modulos,estatus,responsable,fech
 ('D FOTOS','m_dfotos.php',36,1,1,'2021-08-11'),
 ('D EMPRESA','m_dempresa.php',36,1,1,'2021-08-11'),
 ('D BANCARIOS','m_dbancarios.php',36,1,1,'2021-08-11'),
-('CUENTAS','m_cuentas.php',36,1,1,'2021-08-11');
+('CUENTAS','m_cuentas.php',36,1,1,'2021-08-11'),
+
+('MODULOS','modulos.php',37,1,1,'2021-10-06');
 
 DROP TABLE IF EXISTS modulos_sub_usuarios;
 CREATE TABLE modulos_sub_usuarios (
@@ -450,7 +454,9 @@ INSERT INTO modulos_sub_usuarios (id_modulos_sub,id_usuarios,estatus,responsable
 (34,1,1,1,'2021-08-09'),
 (35,1,1,1,'2021-08-09'),
 
-(36,1,1,1,'2021-09-03');
+(36,1,1,1,'2021-09-03'),
+
+(37,1,1,1,'2021-10-09');
 
 DROP TABLE IF EXISTS datos_modelos;
 CREATE TABLE datos_modelos (
@@ -644,8 +650,8 @@ CREATE TABLE solicitudes (
 	PRIMARY KEY (id)
 ); ALTER TABLE solicitudes CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-DROP TABLE IF EXISTS modelos_documentos;
-CREATE TABLE modelos_documentos (
+DROP TABLE IF EXISTS usuarios_documentos;
+CREATE TABLE usuarios_documentos (
 	id INT AUTO_INCREMENT,
 	id_documentos INT NOT NULL,
 	id_usuarios INT NOT NULL,
@@ -653,7 +659,7 @@ CREATE TABLE modelos_documentos (
 	responsable INT NOT NULL,
 	fecha_creacion date NOT NULL,
 	PRIMARY KEY (id)
-); ALTER TABLE modelos_documentos CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+); ALTER TABLE usuarios_documentos CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
 DROP TABLE IF EXISTS documentos;
 CREATE TABLE documentos (
@@ -678,7 +684,12 @@ INSERT INTO documentos (nombre,ruta,fecha_creacion) VALUES
 ('Antecedentes Penales','antecedentes_penales','2020-09-28'),
 ('Extras','extras_','2020-10-02'),
 ('Sensuales','sensuales_','2020-10-06'),
-('Permiso Bancario','acta_cuenta_prestada','2021-04-15');
+('Permiso Bancario','acta_cuenta_prestada','2021-04-15'),
+
+('Firma Nomina','firma_nomina','2021-04-15'),
+('Hoja de Vida','hoja_de_vida','2021-04-15'),
+('Certificación Bancaria Nomina','acta_cuenta_prestada','2021-04-15'),
+('Planilla Seguridad Social','planilla_seguridad_social','2021-04-15');
 
 DROP TABLE IF EXISTS modelos_cuentas;
 CREATE TABLE modelos_cuentas (
