@@ -19,6 +19,7 @@ if($condicion=='table1'){
 	$consultasporpagina = $_POST["consultasporpagina"];
 	$filtrado = $_POST["filtrado"];
 	$sede = $_POST["sede"];
+	$m_estatus = $_POST["m_estatus"];
 
 	if($pagina==0 or $pagina==''){
 		$pagina = 1;
@@ -29,52 +30,25 @@ if($condicion=='table1'){
 	}
 
 	if($filtrado!=''){
-		$filtrado = ' and (mo.nombre LIKE "%'.$filtrado.'%" or us.nombre1 LIKE "%'.$filtrado.'%" or us.nombre2 LIKE "%'.$filtrado.'%" or us.apellido1 LIKE "%'.$filtrado.'%" or us.apellido2 LIKE "%'.$filtrado.'%" or em.nombre LIKE "%'.$filtrado.'%")';
+		$filtrado = ' and (nombre LIKE "%'.$filtrado.'%" or fecha_creacion = "%'.$filtrado.'%")';
 	}
 
-	if($sede!=''){
-		$sede = ' and (mem.id_empresas = '.$sede.') ';
+	if($m_estatus!=''){
+		$m_estatus = ' and (estatus = '.$m_estatus.') ';
 	}
 
 	$limit = $consultasporpagina;
 	$offset = ($pagina - 1) * $consultasporpagina;
 
-	$sql1 = "SELECT 
-		mem.id as modulos_empresas_id,
-		mo.nombre as modulo_nombre,
-		em.nombre as empresa_nombre,
-		mem.estatus as mem_estatus,
-		mem.fecha_creacion as mem_fecha_creacion,
-		mem.fecha_modificacion as mem_fecha_modificacion
-		FROM modulos_empresas mem 
-		INNER JOIN modulos mo 
-		ON mem.id_modulos = mo.id 
-		INNER JOIN empresas em 
-		ON mem.id_empresas = em.id 
-		WHERE mem.id_modulos != 6 
+	$sql1 = "SELECT * FROM modulos WHERE id != 999999  
 		".$filtrado." 
-		".$sede." 
-		ORDER BY mo.id ASC LIMIT ".$limit." OFFSET ".$offset."
+		".$m_estatus."
 	";
 	
-	$sql2 = "SELECT 
-		mem.id as modulos_empresas_id,
-		mo.id as modulo_id,
-		mo.nombre as modulo_nombre,
-		em.nombre as empresa_nombre,
-		em.id as empresa_id,
-		mem.estatus as mem_estatus,
-		mem.fecha_creacion as mem_fecha_creacion,
-		mem.fecha_modificacion as mem_fecha_modificacion
-		FROM modulos_empresas mem 
-		INNER JOIN modulos mo 
-		ON mem.id_modulos = mo.id 
-		INNER JOIN empresas em 
-		ON mem.id_empresas = em.id 
-		WHERE mem.id_modulos != 6 
+	$sql2 = "SELECT * FROM modulos WHERE id != 999999  
 		".$filtrado." 
-		".$sede." 
-		ORDER BY mo.id ASC LIMIT ".$limit." OFFSET ".$offset."
+		".$m_estatus." 
+		ORDER BY id ASC LIMIT ".$limit." OFFSET ".$offset."
 	";
 
 	$proceso1 = mysqli_query($conexion,$sql1);
@@ -91,10 +65,8 @@ if($condicion=='table1'){
 	            <tr>
 	                <th class="text-center">Modulo</th>
 	                <th class="text-center">Sub-Modulos</th>
-	                <th class="text-center">Empresa</th>
 	                <th class="text-center">Estatus</th>
 	                <th class="text-center">Fecha Creación</th>
-	                <th class="text-center">Fecha Modificación</th>
 	                <th class="text-center">Opciones</th>
 	            </tr>
 	            </thead>
@@ -102,37 +74,37 @@ if($condicion=='table1'){
 	';
 	if($conteo1>=1){
 		while($row2 = mysqli_fetch_array($proceso2)) {
-			$modulo_id = $row2["modulo_id"];
-			$empresa_id = $row2["empresa_id"];
-			$modulos_empresas_id = $row2["modulos_empresas_id"];
+			$modulo_id = $row2["id"];
+			$modulo_nombre = $row2["nombre"];
+			$modulo_estatus = $row2["estatus"];
+			$modulo_fecha_creacion = $row2["fecha_creacion"];
 
-			if($row2["mem_estatus"]==1){
-				$mem_estatus = "Activo";
-			}else if($row2["mem_estatus"]==0){
-				$mem_estatus = "Inactivo";
+			if($modulo_estatus==1){
+				$modulo_estatus_nombre = "Activo";
+			}else if($modulo_estatus==0){
+				$modulo_estatus_nombre = "Inactivo";
 			}
+
 			$html .= '
-		                <tr id="tr_'.$row2["modulo_id"].'">
-		                    <td style="text-align:center;">'.$row2["modulo_nombre"].'</td>
+		                <tr id="tr_'.$modulo_id.'">
+		                    <td style="text-align:center;">'.$modulo_nombre.'</td>
 		                    <td style="text-align:center;">
-		                    	<i class="fas fa-search" style="font-size: 25px; cursor: pointer;" data-toggle="modal" data-target="#verSM1" onclick="verSM1('.$modulo_id.','.$empresa_id.');"></i>
+		                    	<i class="fas fa-search" style="font-size: 25px; cursor: pointer;" data-toggle="modal" data-target="#verSM1" onclick="verSM1('.$modulo_id.');"></i>
 		                    </td>
-		                    <td style="text-align:center;">'.$row2["empresa_nombre"].'</td>
-		                    <td style="text-align:center;">'.$mem_estatus.'</td>
-		                    <td style="text-align:center;">'.$row2["mem_fecha_creacion"].'</td>
-		                    <td style="text-align:center;">'.$row2["mem_fecha_modificacion"].'</td>
+		                    <td style="text-align:center;">'.$modulo_estatus_nombre.'</td>
+		                    <td style="text-align:center;">'.$modulo_fecha_creacion.'</td>
 		   ';
 
-			if($row2["mem_estatus"]==1){
+			if($modulo_estatus==1){
 				$html .= '
 					<td class="text-center" nowrap="nowrap">
-						<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#inactivar1" onclick="inactivar1('.$modulo_id.','.$modulos_empresas_id.');">Inactivar</button>
+						<button type="button" class="btn btn-danger" data-toggle="modal" data-target="#inactivar1" onclick="inactivar1('.$modulo_id.');">Inactivar</button>
 					</td>
 				';
-			}else if($row2["mem_estatus"]==0){
+			}else if($modulo_estatus==0){
 				$html .= '
 		                    <td class="text-center" nowrap="nowrap">
-					    		<button type="button" class="btn btn-success" data-toggle="modal" data-target="#activar1" onclick="activar1('.$modulo_id.','.$modulos_empresas_id.');">Activar</button>
+					    		<button type="button" class="btn btn-success" data-toggle="modal" data-target="#activar1" onclick="activar1('.$modulo_id.');">Activar</button>
 		    		 		</td>
 		    	';
 		    }
@@ -268,9 +240,9 @@ if($condicion=='table1'){
 }
 
 if($condicion=='activar1'){
-	$modulos_empresas_id = $_POST["modulos_empresas_id"];
+	$modulo_id = $_POST["modulo_id"];
 
-	$sql1 = "UPDATE modulos_empresas SET estatus = 1, fecha_modificacion = '".$fecha_creacion."' WHERE id = ".$modulos_empresas_id;
+	$sql1 = "UPDATE modulos SET estatus = 1 WHERE id = ".$modulo_id;
 	$proceso1 = mysqli_query($conexion,$sql1);
 
 	$datos = [
@@ -282,9 +254,9 @@ if($condicion=='activar1'){
 }
 
 if($condicion=='inactivar1'){
-	$modulos_empresas_id = $_POST["modulos_empresas_id"];
+	$modulo_id = $_POST["modulo_id"];
 
-	$sql1 = "UPDATE modulos_empresas SET estatus = 0, fecha_modificacion = '".$fecha_creacion."' WHERE id = ".$modulos_empresas_id;
+	$sql1 = "UPDATE modulos SET estatus = 0 WHERE id = ".$modulo_id;
 	$proceso1 = mysqli_query($conexion,$sql1);
 
 	$datos = [
@@ -299,10 +271,8 @@ if($condicion=='table2'){
 	$pagina = $_POST["pagina"];
 	$consultasporpagina = $_POST["consultasporpagina"];
 	$filtrado = $_POST["filtrado"];
-	$link1 = $_POST["link1"];
 	$sede = $_POST["sede"];
-	$link1 = explode("/",$link1);
-	$link1 = $link1[3];
+	$m_estatus = $_POST["m_estatus"];
 
 	if($pagina==0 or $pagina==''){
 		$pagina = 1;
@@ -313,71 +283,31 @@ if($condicion=='table2'){
 	}
 
 	if($filtrado!=''){
-		$filtrado = ' and (us.nombre1 LIKE "%'.$filtrado.'%" or us.nombre2 LIKE "%'.$filtrado.'%" or us.apellido1 LIKE "%'.$filtrado.'%" or us.apellido2 LIKE "%'.$filtrado.'%" or em.nombre LIKE "%'.$filtrado.'%" or pa.nombre LIKE "%'.$filtrado.'%")';
+		$filtrado = ' and (mosub.nombre LIKE "%'.$filtrado.'%" or mo.nombre = "%'.$filtrado.'%" or mosub.fecha_creacion = "%'.$filtrado.'%")';
 	}
 
-	if($sede!=''){
-		$sede = ' and (em.nombre = '.$sede.') ';
+	if($m_estatus!=''){
+		$m_estatus = ' and (mosub.estatus = '.$m_estatus.') ';
 	}
 
 	$limit = $consultasporpagina;
 	$offset = ($pagina - 1) * $consultasporpagina;
 
-	$sql1 = "SELECT 
-		us.id as usuario_id,
-		us.nombre1 as nombre1,
-		us.nombre2 as nombre2,
-		us.apellido1 as apellido1,
-		us.apellido2 as apellido2,
-		us.documento_tipo as documento_tipo,
-		us.documento_numero as documento_numero,
-		us.correo_empresa as correo_empresa,
-		us.estatus_nomina as usuario_nomina_estatus,
-		us.id_empresa as usuario_id_empresa,
-		pa.nombre as pais_nombre,
-		pa.codigo as pais_codigo,
-		dti.id as dti_id,
-		dti.nombre as dti_nombre 
-		FROM usuarios us 
-		INNER JOIN empresas em 
-		ON us.id_empresa = em.id 
-		INNER JOIN paises pa
-		ON us.id_pais = pa.id 
-		INNER JOIN documento_tipo dti
-		ON us.documento_tipo = dti.id 
-		WHERE us.estatus_nomina = 1  
+	$sql1 = "SELECT * FROM modulos_sub mosub 
+	INNER JOIN modulos mo 
+	ON mosub.id_modulos = mo.id 
+	 WHERE mo.id != 999999  
 		".$filtrado." 
-		".$sede." 
-		ORDER BY us.id DESC LIMIT ".$limit." OFFSET ".$offset."
+		".$m_estatus."
 	";
-	
-	$sql2 = "SELECT 
-		us.id as usuario_id,
-		us.nombre1 as nombre1,
-		us.nombre2 as nombre2,
-		us.apellido1 as apellido1,
-		us.apellido2 as apellido2,
-		us.documento_tipo as documento_tipo,
-		us.documento_numero as documento_numero,
-		us.correo_empresa as correo_empresa,
-		us.estatus_nomina as usuario_nomina_estatus,
-		us.id_empresa as usuario_id_empresa,
-		pa.nombre as pais_nombre,
-		pa.codigo as pais_codigo,
-		dti.id as dti_id,
-		dti.nombre as dti_nombre,
-		em.nombre as empresa_nombre 
-		FROM usuarios us 
-		INNER JOIN empresas em 
-		ON us.id_empresa = em.id 
-		INNER JOIN paises pa
-		ON us.id_pais = pa.id 
-		INNER JOIN documento_tipo dti
-		ON us.documento_tipo = dti.id 
-		WHERE us.estatus_nomina = 1  
+
+	$sql2 = "SELECT mo.id as modulo_id, mosub.id as sub_modulo_id, mosub.nombre as sub_modulo_nombre, mosub.estatus as sub_modulo_estatus, mosub.fecha_creacion as sub_modulo_fecha_creacion FROM modulos_sub mosub 
+	INNER JOIN modulos mo 
+	ON mosub.id_modulos = mo.id 
+	 WHERE mo.id != 999999  
 		".$filtrado." 
-		".$sede." 
-		ORDER BY us.id DESC LIMIT ".$limit." OFFSET ".$offset."
+		".$m_estatus." 
+		ORDER BY mosub.id ASC LIMIT ".$limit." OFFSET ".$offset."
 	";
 
 	$proceso1 = mysqli_query($conexion,$sql1);
@@ -392,13 +322,10 @@ if($condicion=='table2'){
 	        <table class="table table-bordered">
 	            <thead>
 	            <tr>
-	                <th class="text-center">Usuario</th>
-	                <th class="text-center">T Documento</th>
-	                <th class="text-center">N Documento</th>
-	                <th class="text-center">Correo</th>
+	                <th class="text-center">Sub-Modulo</th>
+	                <th class="text-center">Modulos Multiples</th>
 	                <th class="text-center">Estatus</th>
-	                <th class="text-center">Empresa</th>
-	                <th class="text-center">Pais</th>
+	                <th class="text-center">Fecha Creación</th>
 	                <th class="text-center">Opciones</th>
 	            </tr>
 	            </thead>
@@ -406,26 +333,43 @@ if($condicion=='table2'){
 	';
 	if($conteo1>=1){
 		while($row2 = mysqli_fetch_array($proceso2)) {
-			if($row2["usuario_nomina_estatus"]==1){
-				$usuario_nomina_estatus = "Activo";
-			}else if($row2["usuario_nomina_estatus"]==0){
-				$usuario_nomina_estatus = "Inactivo";
+			$modulo_id = $row2["modulo_id"];
+			$sub_modulo_id = $row2["sub_modulo_id"];
+			$sub_modulo_nombre = $row2["sub_modulo_nombre"];
+			$sub_modulo_estatus = $row2["sub_modulo_estatus"];
+			$sub_modulo_fecha_creacion = $row2["sub_modulo_fecha_creacion"];
+
+			if($sub_modulo_estatus==1){
+				$sub_modulo_estatus_nombre = "Activo";
+			}else if($sub_modulo_estatus==0){
+				$sub_modulo_estatus_nombre = "Inactivo";
 			}
+
 			$html .= '
-		                <tr id="tr_'.$row2["usuario_id"].'">
-		                    <td style="text-align:center;">'.$row2["nombre1"]." ".$row2["nombre2"]." ".$row2["apellido1"]." ".$row2["apellido2"].'</td>
-		                    <td style="text-align:center;">'.$row2["dti_nombre"].'</td>
-		                    <td style="text-align:center;">'.$row2["documento_numero"].'</td>
-		                    <td style="text-align:center;">'.$row2["correo_empresa"].'</td>
-		                    <td style="text-align:center;">'.$usuario_nomina_estatus.'</td>
-		                    <td style="text-align:center;">'.$row2["empresa_nombre"].'</td>
-		                    <td style="text-align:center;">'.$row2["pais_nombre"].'</td>
-		                    <td style="text-align:center;" nowrap="nowrap">
-		                    	<button type="button" class="btn btn-success" data-toggle="modal" data-target="#opciones1" onclick="opciones1('.$row2["usuario_id"].');">Crear</button>
-		                    	<button type="button" class="btn btn-info" data-toggle="modal" data-target="#opciones2" onclick="opciones2('.$row2["usuario_id"].');">Ver</button>
+		                <tr id="tr_'.$sub_modulo_id.'">
+		                    <td style="text-align:center;">'.$sub_modulo_nombre.'</td>
+		                    <td style="text-align:center;">
+		                    	<i class="fas fa-search" style="font-size: 25px; cursor: pointer;" data-toggle="modal" data-target="#verMM1" onclick="verMM1('.$sub_modulo_id.');"></i>
 		                    </td>
-						</tr>
+		                    <td style="text-align:center;">'.$sub_modulo_estatus_nombre.'</td>
+		                    <td style="text-align:center;">'.$sub_modulo_fecha_creacion.'</td>
+		                    <td class="text-center" nowrap="nowrap">
+		                    	<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#agregarmultiple1" onclick="agregarmultiple1('.$sub_modulo_id.');">Agregar Multiple</button>
 		   ';
+
+			if($sub_modulo_estatus==1){
+				$html .= '
+								<button type="button" class="btn btn-danger" onclick="inactivar2('.$sub_modulo_id.');">Inactivar</button>
+				';
+			}else if($sub_modulo_estatus==0){
+				$html .= '
+					    		<button type="button" class="btn btn-success" onclick="activar2('.$sub_modulo_id.');">Activar</button>
+		    	';
+		    }
+		    	$html .= '
+		    				</td>
+		    			</tr>
+		    	';
 
 		}
 	}else{
@@ -711,13 +655,9 @@ if($condicion=='revocar1'){
 
 if($condicion=='verSM1'){
 	$modulo_id = $_POST["modulo_id"];
-	$empresa_id = $_POST["empresa_id"];
 	$html = '';
 
-	$sql1 = "SELECT mo.nombre as modulos_nombre, mo.estatus as modulos_estatus, moem.estatus as moem_estatus FROM modulos_empresas moem 
-	INNER JOIN modulos mo 
-	ON mo.id = moem.id_modulos 
-	WHERE moem.id_modulos = ".$modulo_id;
+	$sql1 = "SELECT * FROM modulos WHERE id = ".$modulo_id;
 	$proceso1 = mysqli_query($conexion,$sql1);
 	$contador1 = mysqli_num_rows($proceso1);
 
@@ -818,6 +758,136 @@ if($condicion=='submodulo_activar'){
 		"sql1"	=> $sql1,
 		"html"	=> $html,
 		"msg"	=> "Se ha cambiado el estatus exitosamente!",
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='verMM1'){
+	$submodulo_id = $_POST["submodulo_id"];
+	$html = '';
+
+	$sql1 = "SELECT * FROM modulos_sub WHERE id = ".$submodulo_id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+	$contador1 = mysqli_num_rows($proceso1);
+
+	if($contador1>=1){
+		while($row1 = mysqli_fetch_array($proceso1)) {
+			$sql2 = "SELECT * FROM modulos_multiple WHERE id_sub_modulos = ".$submodulo_id;
+			$proceso2 = mysqli_query($conexion,$sql2);
+			while($row2 = mysqli_fetch_array($proceso2)) {
+				$modulos_multiples_id = $row2["id"];
+				$modulos_multiples_nombre = $row2["nombre"];
+				$modulos_multiples_url = $row2["url"];
+				$modulos_multiples_estatus = $row2["estatus"];
+				$modulos_multiples_responsable = $row2["responsable"];
+				$modulos_multiples_fecha_creacion = $row2["fecha_creacion"];
+
+				if($modulos_multiples_estatus==1){
+					$html .= '
+						<div class="col-12 text-center mt-3 mb-3" id="div_modulo_multiple_'.$modulos_multiples_id.'">
+							<button type="button" class="btn btn-danger" onclick="desactivar_modulomultiple1('.$modulos_multiples_id.');">Desactivar Modulo Multiple</button>
+						</div>
+					';
+				}else{
+					$html .= '
+						<div class="col-12 text-center mt-3 mb-3" id="div_modulo_multiple_'.$modulos_multiples_id.'">
+							<button type="button" class="btn btn-success" onclick="activar_modulomultiple1('.$modulos_multiples_id.');">Activar Modulo Multiple</button>
+						</div>
+					';
+				}
+
+				$html .= '
+					<div class="col-6"><strong>Nombre del Multiple-Modulo:</strong></div>
+					<div class="col-6">'.$modulos_multiples_nombre.'</div>
+					<div class="col-6"><strong>Responsable:</strong></div>
+					<div class="col-6">'.$modulos_multiples_responsable.'</div>
+					<div class="col-6"><strong>Fecha Creación:</strong></div>
+					<div class="col-6">'.$modulos_multiples_fecha_creacion.'</div>
+				';
+
+				$html .= '
+					<div class="col-12">
+						<hr style="background-color: black; font-size: 2px;">
+					</div>
+				';
+
+			}
+		}
+	}else{
+		$html .= 'No se ha encontrado vinculación entre empresa y módulo, refresque la página';
+	}
+
+	$datos = [
+		"html"	=> $html,
+		"sql1"	=> $sql1,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='modulomultiple_activar'){
+	$modulomultiple_id = $_POST["modulomultiple_id"];
+	$html = '';
+
+	$sql1 = "UPDATE modulos_multiple SET estatus = 1 WHERE id = ".$modulomultiple_id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"msg"	=> "Se ha activado exitosamente!",
+		"html"	=> '<button type="button" class="btn btn-danger" onclick="desactivar_modulomultiple1(1);">Desactivar Modulo Multiple</button>',
+		"sql1"	=> $sql1,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='modulomultiple_desactivar'){
+	$modulomultiple_id = $_POST["modulomultiple_id"];
+	$html = '';
+
+	$sql1 = "UPDATE modulos_multiple SET estatus = 0 WHERE id = ".$modulomultiple_id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"msg"	=> "Se ha desactivado exitosamente!",
+		"html"	=> '<button type="button" class="btn btn-success" onclick="activar_modulomultiple1(1);">Activar Modulo Multiple</button>',
+		"sql1"	=> $sql1,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='agregarmultiple1'){
+	$id = $_POST["submodulo_id"];
+	$nombre = strtoupper($_POST["agregarmultiple1_nombre"]);
+	$url = $_POST["agregarmultiple1_url"];
+	$estatus = $_POST["agregarmultiple1_estatus"];
+
+	$sql1 = "INSERT INTO modulos_multiple (nombre,url,id_sub_modulos,estatus,responsable,fecha_creacion) VALUES ('$nombre','$url','$id','$estatus','$responsable','$fecha_creacion')";
+	$proceso1 = mysqli_query($conexion,$sql1);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"msg"	=> "Se ha creado exitosamente!",
+		"sql1"	=> $sql1,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='agregarsubmodulo1'){
+	$nombre = strtoupper($_POST["agregarsubmodulo1_nombre"]);
+	$url = $_POST["agregarsubmodulo1_url"];
+	$modulo_id = $_POST["agregarsubmodulo1_modulo_id"];
+	$principal = $_POST["agregarsubmodulo1_principal"];
+	$rol = $_POST["agregarsubmodulo1_rol"];
+	$estatus = $_POST["agregarsubmodulo1_estatus"];
+
+	$sql1 = "INSERT INTO modulos_sub (nombre,url,id_modulos,principal,id_usuario_rol,estatus,responsable,fecha_creacion) VALUES ('$nombre','$url','$modulo_id','$principal','$rol','$estatus','$responsable','$fecha_creacion')";
+	$proceso1 = mysqli_query($conexion,$sql1);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"msg"	=> "Se ha creado exitosamente!",
+		"sql1"	=> $sql1,
 	];
 	echo json_encode($datos);
 }

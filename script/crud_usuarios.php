@@ -1,5 +1,12 @@
 <?php
+@session_start();
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+require '../resources/PHPMailer/PHPMailer/src/Exception.php';
+require '../resources/PHPMailer/PHPMailer/src/PHPMailer.php';
+require '../resources/PHPMailer/PHPMailer/src/SMTP.php';
 include('conexion.php');
+include('conexion2.php');
 $condicion = $_POST["condicion"];
 $datetime = date('Y-m-d H:i:s');
 
@@ -151,7 +158,6 @@ if($condicion=='consultar_pasantes1'){
 		"sede"				=> $sede,
 	];
 	echo json_encode($datos);
-
 }
 
 if($condicion=='peticion_pasantes1'){
@@ -170,7 +176,6 @@ if($condicion=='peticion_pasantes1'){
 		"turno"	 	=> $turno,
 	];
 	echo json_encode($datos);
-
 }
 
 if($condicion=='editar_pasantes1'){
@@ -229,10 +234,263 @@ if($condicion=='editar_pasantes1'){
 		];
 		echo json_encode($datos);
 	}
-
 }
 
+if($condicion=='table1'){
+	$pagina = $_POST["pagina"];
+	$consultasporpagina = $_POST["consultasporpagina"];
+	$filtrado = $_POST["filtrado"];
+	$link1 = $_POST["link1"];
+	$empresa = $_POST["empresa"];
+	$m_estatus = $_POST["m_estatus"];
+	$link1 = explode("/",$link1);
+	$link1 = $link1[3];
 
+	if($pagina==0 or $pagina==''){
+		$pagina = 1;
+	}
+
+	if($consultasporpagina==0 or $consultasporpagina==''){
+		$consultasporpagina = 10;
+	}
+
+	if($filtrado!=''){
+		$filtrado = ' and (nombre1 LIKE "%'.$filtrado.'%" or nombre2 LIKE "%'.$filtrado.'%" or apellido1 LIKE "%'.$filtrado.'%" or apellido2 LIKE "%'.$filtrado.'%" or documento_numero LIKE "%'.$filtrado.'%" or us.correo_personal LIKE "%'.$filtrado.'%" or telefono LIKE "%'.$filtrado.'%")';
+	}
+
+	if($empresa!=''){
+		$empresa = ' and (mo.id_empresa = '.$empresa.') ';
+	}
+
+	if($m_estatus!=''){
+		$m_estatus = " and (mo.estatus = ".$m_estatus.")";
+	}
+
+	$limit = $consultasporpagina;
+	$offset = ($pagina - 1) * $consultasporpagina;
+
+	$sql1 = "SELECT us.nombre1 as nombre1, us.nombre2 as nombre2, us.apellido1 as apellido1, us.apellido2 as apellido2, us.documento_tipo as documento_tipo, us.documento_numero as documento_numero, us.correo_personal as correo_personal, us.telefono as telefono, us.rol as rol, us.estatus_modelo as estatus_modelo, us.estatus_nomina as estatus_nomina, us.estatus_pasantia as estatus_pasantia, us.estatus_pasantes as estatus_pasantes, us.genero as genero, us.direccion as direccion, us.id_empresa as id_empresa, us.id_pais as id_pais, us.fecha_modificacion as fecha_modificacion, us.fecha_creacion as fecha_creacion 
+		FROM usuarios us
+		INNER JOIN empresas em
+		ON us.id_empresa = em.id 
+		INNER JOIN paises pa
+		ON pa.id = us.id_pais
+		WHERE us.id != 0 
+		".$filtrado." 
+		".$empresa."
+		".$m_estatus." 
+	";
+	
+	$sql2 = "SELECT us.nombre1 as nombre1, us.nombre2 as nombre2, us.apellido1 as apellido1, us.apellido2 as apellido2, us.documento_tipo as documento_tipo, us.documento_numero as documento_numero, us.correo_personal as correo_personal, us.telefono as telefono, us.rol as rol, us.estatus_modelo as estatus_modelo, us.estatus_nomina as estatus_nomina, us.estatus_pasantia as estatus_pasantia, us.estatus_pasantes as estatus_pasantes, us.genero as genero, us.direccion as direccion, us.id_empresa as id_empresa, us.id_pais as id_pais, us.fecha_modificacion as fecha_modificacion, us.fecha_creacion as fecha_creacion 
+		FROM usuarios us
+		INNER JOIN empresas em
+		ON us.id_empresa = em.id 
+		INNER JOIN paises pa
+		ON pa.id = us.id_pais
+		WHERE us.id != 0 
+		".$filtrado." 
+		".$empresa."
+		".$m_estatus."
+		ORDER BY us.id DESC LIMIT ".$limit." OFFSET ".$offset."
+	";
+
+	$proceso1 = mysqli_query($conexion,$sql1);
+	$proceso2 = mysqli_query($conexion,$sql2);
+	$conteo1 = mysqli_num_rows($proceso1);
+	$paginas = ceil($conteo1 / $consultasporpagina);
+
+	$html = '';
+
+	$html .= '
+		<div class="col-xs-12">
+	        <table class="table table-bordered">
+	            <thead>
+	            <tr>
+	                <th class="text-center">T Doc</th>
+	                <th class="text-center">N Doc</th>
+	                <th class="text-center">Nombre</th>
+	                <th class="text-center">Modelo</th>
+	                <th class="text-center">Nomina</th>
+	                <th class="text-center">Satelite</th>
+	                <th class="text-center">Pasantes</th>
+	                <th class="text-center">Pasantia</th>
+	                <th class="text-center">Empresa</th>
+	                <th class="text-center">Ingreso</th>
+	                <th class="text-center">Opciones</th>
+	            </tr>
+	            </thead>
+	            <tbody>
+	';
+	if($conteo1>=1){
+		while($row2 = mysqli_fetch_array($proceso2)) {
+			if($row2["modelo_estatus"]==1){
+				$modelo_estatus = "Proceso";
+			}else if($row2["modelo_estatus"]==2){
+				$modelo_estatus = "Aceptado";
+			}else if($row2["modelo_estatus"]==3){
+				$modelo_estatus = "Rechazado";
+			}
+			$html .= '
+		                <tr id="tr_'.$row2["modelo_id"].'">
+		                    <td style="text-align:center;">'.$row2["documento_tipo"].'</td>
+		                    <td style="text-align:center;">'.$row2["documento_numero"].'</td>
+		                    <td>'.$row2["nombre1"]." ".$row2["nombre2"]." ".$row2["apellido1"]." ".$row2["apellido2"].'</td>
+		                    <td style="text-align:center;">'.$row2["genero"].'</td>
+		                    <!--<td style="text-align:center;">'.$row2["correo"].'</td>-->
+		                    <td style="text-align:center;">'.$row2["telefono"].'</td>
+		                    <td  style="text-align:center;">'.$modelo_estatus.'</td>
+		                    <td style="text-align:center;">'.$row2["sede"].'</td>
+		                    <td nowrap="nowrap">'.$row2["fecha_creacion"].'</td>
+		                    <td class="text-center" nowrap="nowrap">
+		                    	<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#personales1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Editar</button>
+		                    	<button type="button" class="btn btn-info" style="cursor:pointer;" data-toggle="modal" data-target="#personales1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Permisos</button>
+			';
+
+			if($row2["modelo_estatus"]==1){
+				$html .= '
+								<button type="button" class="btn btn-success" onclick="aceptar1('.$row2["usuario_id"].');">A</button>
+								<button type="button" class="btn btn-danger" onclick="rechazar1('.$row2["usuario_id"].');">R</button>
+				';
+			}else if($row2["modelo_estatus"]==2){
+				$html .= '
+								<button type="button" class="btn btn-danger" onclick="rechazar1('.$row2["usuario_id"].');">Rechazar</button>
+				';
+			}else if($row2["modelo_estatus"]==3){
+				$html .= '
+
+								<button type="button" class="btn btn-success" onclick="aceptar1('.$row2["usuario_id"].');">Aceptar</button>
+				';
+			}
+		    
+		    $html .= '		</td>
+		    			</tr>
+		    ';
+		}
+	}else{
+		$html .= '<tr><td colspan="10" class="text-center" style="font-weight:bold;font-size:20px;">Sin Resultados</td></tr>';
+	}
+
+	$html .= '
+	            </tbody>
+	        </table>
+	        <nav>
+	            <div class="row">
+	                <div class="col-xs-12 col-sm-4 text-center">
+	                    <p>Mostrando '.$consultasporpagina.' de '.$conteo1.' Datos disponibles</p>
+	                </div>
+	                <div class="col-xs-12 col-sm-4 text-center">
+	                    <p>Página '.$pagina.' de '.$paginas.' </p>
+	                </div> 
+	                <div class="col-xs-12 col-sm-4">
+			            <nav aria-label="Page navigation" style="float:right; padding-right:2rem;">
+							<ul class="pagination">
+	';
+	
+	if ($pagina > 1) {
+		$html .= '
+								<li class="page-item">
+									<a class="page-link" onclick="paginacion1('.($pagina-1).');" href="#">
+										<span aria-hidden="true">Anterior</span>
+									</a>
+								</li>
+		';
+	}
+
+	$diferenciapagina = 3;
+	
+	/*********MENOS********/
+	if($pagina==2){
+		$html .= '
+		                		<li class="page-item">
+			                        <a class="page-link" onclick="paginacion1('.($pagina-1).');" href="#">
+			                            '.($pagina-1).'
+			                        </a>
+			                    </li>
+		';
+	}else if($pagina==3){
+		$html .= '
+			                    <li class="page-item">
+			                        <a class="page-link" onclick="paginacion1('.($pagina-2).');" href="#"">
+			                            '.($pagina-2).'
+			                        </a>
+			                    </li>
+			                    <li class="page-item">
+			                        <a class="page-link" onclick="paginacion1('.($pagina-1).');" href="#"">
+			                            '.($pagina-1).'
+			                        </a>
+			                    </li>
+	';
+	}else if($pagina>=4){
+		$html .= '
+		                		<li class="page-item">
+			                        <a class="page-link" onclick="paginacion1('.($pagina-3).');" href="#"">
+			                            '.($pagina-3).'
+			                        </a>
+			                    </li>
+			                    <li class="page-item">
+			                        <a class="page-link" onclick="paginacion1('.($pagina-2).');" href="#"">
+			                            '.($pagina-2).'
+			                        </a>
+			                    </li>
+			                    <li class="page-item">
+			                        <a class="page-link" onclick="paginacion1('.($pagina-1).');" href="#"">
+			                            '.($pagina-1).'
+			                        </a>
+			                    </li>
+		';
+	} 
+
+	/*********MAS********/
+	$opcionmas = $pagina+3;
+	if($paginas==0){
+		$opcionmas = $paginas;
+	}else if($paginas>=1 and $paginas<=4){
+		$opcionmas = $paginas;
+	}
+	
+	for ($x=$pagina;$x<=$opcionmas;$x++) {
+		$html .= '
+			                    <li class="page-item 
+		';
+
+		if ($x == $pagina){ 
+			$html .= '"active"';
+		}
+
+		$html .= '">';
+
+		$html .= '
+			                        <a class="page-link" onclick="paginacion1('.($x).');" href="#"">'.$x.'</a>
+			                    </li>
+		';
+	}
+
+	if ($pagina < $paginas) {
+		$html .= '
+			                    <li class="page-item">
+			                        <a class="page-link" onclick="paginacion1('.($pagina+1).');" href="#"">
+			                            <span aria-hidden="true">Siguiente</span>
+			                        </a>
+			                    </li>
+		';
+	}
+
+	$html .= '
+
+						</ul>
+					</nav>
+				</div>
+	        </nav>
+	    </div>
+	';
+
+	$datos = [
+		"estatus"	=> "ok",
+		"html"	=> $html,
+		"sql2"	=> $sql2,
+	];
+	echo json_encode($datos);
+}
 
 
 ?>

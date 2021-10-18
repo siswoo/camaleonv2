@@ -15,7 +15,8 @@ CREATE TABLE roles (
 ); ALTER TABLE roles CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 INSERT INTO roles (nombre,estatus,inicio,responsable,id_empresa,fecha_creacion) VALUES 
 ('admin',1,1,1,1,'2021-04-18'),
-('modelos',1,1,1,1,'2021-04-18');
+('modelos',1,1,1,1,'2021-04-18'),
+('nominas',1,1,1,1,'2021-10-15');
 
 DROP TABLE IF EXISTS modulos;
 CREATE TABLE modulos (
@@ -206,12 +207,13 @@ CREATE TABLE empresas (
 	responsable VARCHAR(250) NOT NULL,
 	cedula VARCHAR(250) NOT NULL,
 	rut VARCHAR(250) NOT NULL,
+	estatus INT NOT NULL,
 	PRIMARY KEY (id)
 ); ALTER TABLE empresas CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-INSERT INTO empresas (nombre,direccion,ciudad,descripcion,responsable,cedula,rut) VALUES 
-('Camaleon Models Group','Direccion','Bogotá D.C','BERNAL GROUP  SAS','Andres Fernando Bernal Correa', '80.774.671', '901.257.204-8'),
-('Camaleon Models Group Medellin','Carrera 81 #30A 67','Medellin','BERNAL GROUP  SAS','Andres Fernando Bernal Correa', '80.774.671', '901322261-6');
+INSERT INTO empresas (nombre,direccion,ciudad,descripcion,responsable,cedula,rut,estatus) VALUES 
+('Camaleon Models Group','Direccion','Bogotá D.C','BERNAL GROUP  SAS','Andres Fernando Bernal Correa', '80.774.671', '901.257.204-8', 1),
+('Camaleon Models Group Medellin','Carrera 81 #30A 67','Medellin','BERNAL GROUP  SAS','Andres Fernando Bernal Correa', '80.774.671', '901322261-6', 1);
 	
 DROP TABLE IF EXISTS sedes;
 CREATE TABLE sedes (

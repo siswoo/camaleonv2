@@ -60,7 +60,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 			<select class="form-control" id="m_estatus" name="m_estatus">
 				<option value="">Todos</option>
 				<option value="1">Activos</option>
-				<option value="2">Inactivos</option>
+				<option value="0">Inactivos</option>
 			</select>
 		</div>
 		<div class="col-3 form-group form-check">
@@ -330,74 +330,6 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 		});
 	});
 
-	function aceptar1(usuario_id){
-		$('#usuario_id').val(usuario_id);
-		$.ajax({
-			type: 'POST',
-			url: '../script/crud_modelos.php',
-			dataType: "JSON",
-			data: {
-				"usuario_id": usuario_id,
-				"condicion": "aceptar_modelos1",
-			},
-
-			success: function(respuesta) {
-				console.log(respuesta);
-				if(respuesta["estatus"]=="ok"){
-					Swal.fire({
-						title: 'Correcto!',
-						text: respuesta["msg"],
-						icon: 'success',
-					})
-				}else if(respuesta["estatus"]=="error"){
-					Swal.fire({
-						title: 'Error',
-						text: respuesta["msg"],
-						icon: 'error',
-					})
-				}
-			},
-
-			error: function(respuesta) {
-				console.log(respuesta['responseText']);
-			}
-		});
-	}
-
-	function rechazar1(usuario_id){
-		$('#usuario_id').val(usuario_id);
-		$.ajax({
-			type: 'POST',
-			url: '../script/crud_modelos.php',
-			dataType: "JSON",
-			data: {
-				"usuario_id": usuario_id,
-				"condicion": "rechazar_modelos1",
-			},
-
-			success: function(respuesta) {
-				console.log(respuesta);
-				if(respuesta["estatus"]=="ok"){
-					Swal.fire({
-						title: 'Correcto!',
-						text: respuesta["msg"],
-						icon: 'success',
-					})
-				}else if(respuesta["estatus"]=="error"){
-					Swal.fire({
-						title: 'Error',
-						text: respuesta["msg"],
-						icon: 'error',
-					})
-				}
-			},
-
-			error: function(respuesta) {
-				console.log(respuesta['responseText']);
-			}
-		});
-	}
-
 	function verSM1(modulo_id,empresa_id){
 		$.ajax({
 			type: 'POST',
@@ -420,14 +352,13 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 		});
 	}
 
-	function inactivar1(modulo_id,modulos_empresas_id){
+	function inactivar1(modulo_id){
 		$.ajax({
 			type: 'POST',
 			url: '../script/crud_modulos.php',
 			dataType: "JSON",
 			data: {
 				"modulo_id": modulo_id,
-				"modulos_empresas_id": modulos_empresas_id,
 				"condicion": "inactivar1",
 			},
 
@@ -454,14 +385,13 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 		});
 	}
 
-	function activar1(modulo_id,modulos_empresas_id){
+	function activar1(modulo_id){
 		$.ajax({
 			type: 'POST',
 			url: '../script/crud_modulos.php',
 			dataType: "JSON",
 			data: {
 				"modulo_id": modulo_id,
-				"modulos_empresas_id": modulos_empresas_id,
 				"condicion": "activar1",
 			},
 
