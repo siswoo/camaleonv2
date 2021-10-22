@@ -9,6 +9,10 @@ include('conexion.php');
 include('conexion2.php');
 $condicion = $_POST["condicion"];
 $datetime = date('Y-m-d H:i:s');
+$empresa = $_SESSION["camaleonapp_empresa"];
+$fecha_creacion = date('Y-m-d');
+$fecha_modificacion = date('Y-m-d');
+$responsable = $_SESSION['camaleonapp_id'];
 
 if($condicion=='login1'){
 	$usuario = $_POST['usuario'];
@@ -269,29 +273,33 @@ if($condicion=='table1'){
 	$limit = $consultasporpagina;
 	$offset = ($pagina - 1) * $consultasporpagina;
 
-	$sql1 = "SELECT us.nombre1 as nombre1, us.nombre2 as nombre2, us.apellido1 as apellido1, us.apellido2 as apellido2, us.documento_tipo as documento_tipo, us.documento_numero as documento_numero, us.correo_personal as correo_personal, us.telefono as telefono, us.rol as rol, us.estatus_modelo as estatus_modelo, us.estatus_nomina as estatus_nomina, us.estatus_pasantia as estatus_pasantia, us.estatus_pasantes as estatus_pasantes, us.genero as genero, us.direccion as direccion, us.id_empresa as id_empresa, us.id_pais as id_pais, us.fecha_modificacion as fecha_modificacion, us.fecha_creacion as fecha_creacion 
+	$sql1 = "SELECT us.nombre1 as nombre1, us.nombre2 as nombre2, us.apellido1 as apellido1, us.apellido2 as apellido2, us.documento_tipo as documento_tipo, us.documento_numero as documento_numero, us.correo_personal as correo_personal, us.telefono as telefono, us.rol as rol, us.estatus_modelo as estatus_modelo, us.estatus_nomina as estatus_nomina, us.estatus_pasantia as estatus_pasantia, us.estatus_pasantes as estatus_pasantes, us.genero as genero, us.direccion as direccion, us.id_empresa as id_empresa, us.id_pais as id_pais, us.fecha_modificacion as fecha_modificacion, us.fecha_creacion as fecha_creacion, em.nombre as empresa_nombre, em.id as empresa_id, doct.nombre as documento_tipo_nombre 
 		FROM usuarios us
 		INNER JOIN empresas em
 		ON us.id_empresa = em.id 
 		INNER JOIN paises pa
 		ON pa.id = us.id_pais
+		INNER JOIN documento_tipo doct
+		ON doct.id = us.documento_tipo
 		WHERE us.id != 0 
 		".$filtrado." 
 		".$empresa."
 		".$m_estatus." 
 	";
 	
-	$sql2 = "SELECT us.nombre1 as nombre1, us.nombre2 as nombre2, us.apellido1 as apellido1, us.apellido2 as apellido2, us.documento_tipo as documento_tipo, us.documento_numero as documento_numero, us.correo_personal as correo_personal, us.telefono as telefono, us.rol as rol, us.estatus_modelo as estatus_modelo, us.estatus_nomina as estatus_nomina, us.estatus_pasantia as estatus_pasantia, us.estatus_pasantes as estatus_pasantes, us.genero as genero, us.direccion as direccion, us.id_empresa as id_empresa, us.id_pais as id_pais, us.fecha_modificacion as fecha_modificacion, us.fecha_creacion as fecha_creacion 
+	$sql2 = "SELECT us.id as id, us.nombre1 as nombre1, us.nombre2 as nombre2, us.apellido1 as apellido1, us.apellido2 as apellido2, us.documento_tipo as documento_tipo, us.documento_numero as documento_numero, us.correo_personal as correo_personal, us.telefono as telefono, us.rol as rol, us.estatus_modelo as estatus_modelo, us.estatus_nomina as estatus_nomina, us.estatus_pasantia as estatus_pasantia, us.estatus_pasantes as estatus_pasantes, us.genero as genero, us.direccion as direccion, us.id_empresa as id_empresa, us.id_pais as id_pais, us.fecha_modificacion as fecha_modificacion, us.fecha_creacion as fecha_creacion, em.nombre as empresa_nombre, em.id as empresa_id, doct.nombre as documento_tipo_nombre 
 		FROM usuarios us
 		INNER JOIN empresas em
 		ON us.id_empresa = em.id 
 		INNER JOIN paises pa
 		ON pa.id = us.id_pais
+		INNER JOIN documento_tipo doct
+		ON doct.id = us.documento_tipo
 		WHERE us.id != 0 
 		".$filtrado." 
 		".$empresa."
 		".$m_estatus."
-		ORDER BY us.id DESC LIMIT ".$limit." OFFSET ".$offset."
+		ORDER BY us.id ASC LIMIT ".$limit." OFFSET ".$offset."
 	";
 
 	$proceso1 = mysqli_query($conexion,$sql1);
@@ -313,7 +321,6 @@ if($condicion=='table1'){
 	                <th class="text-center">Nomina</th>
 	                <th class="text-center">Satelite</th>
 	                <th class="text-center">Pasantes</th>
-	                <th class="text-center">Pasantia</th>
 	                <th class="text-center">Empresa</th>
 	                <th class="text-center">Ingreso</th>
 	                <th class="text-center">Opciones</th>
@@ -323,44 +330,41 @@ if($condicion=='table1'){
 	';
 	if($conteo1>=1){
 		while($row2 = mysqli_fetch_array($proceso2)) {
-			if($row2["modelo_estatus"]==1){
-				$modelo_estatus = "Proceso";
-			}else if($row2["modelo_estatus"]==2){
-				$modelo_estatus = "Aceptado";
-			}else if($row2["modelo_estatus"]==3){
-				$modelo_estatus = "Rechazado";
+
+			if($row2["estatus_modelo"]==0){
+				$estatus_modelo = "No";
+			}else if($row2["estatus_modelo"]==1){
+				$estatus_modelo = "Si";
 			}
+
+			if($row2["estatus_nomina"]==0){
+				$estatus_nomina = "No";
+			}else if($row2["estatus_nomina"]==1){
+				$estatus_nomina = "Si";
+			}
+
+			if($row2["estatus_pasantes"]==0){
+				$estatus_pasantes = "No";
+			}else if($row2["estatus_pasantes"]==1){
+				$estatus_pasantes = "Si";
+			}
+
 			$html .= '
-		                <tr id="tr_'.$row2["modelo_id"].'">
-		                    <td style="text-align:center;">'.$row2["documento_tipo"].'</td>
+		                <tr id="tr_'.$row2["id"].'">
+		                    <td style="text-align:center;">'.$row2["documento_tipo_nombre"].'</td>
 		                    <td style="text-align:center;">'.$row2["documento_numero"].'</td>
 		                    <td>'.$row2["nombre1"]." ".$row2["nombre2"]." ".$row2["apellido1"]." ".$row2["apellido2"].'</td>
-		                    <td style="text-align:center;">'.$row2["genero"].'</td>
-		                    <!--<td style="text-align:center;">'.$row2["correo"].'</td>-->
-		                    <td style="text-align:center;">'.$row2["telefono"].'</td>
-		                    <td  style="text-align:center;">'.$modelo_estatus.'</td>
-		                    <td style="text-align:center;">'.$row2["sede"].'</td>
+		                    <td style="text-align:center;">'.$estatus_modelo.'</td>
+		                    <td style="text-align:center;">'.$estatus_nomina.'</td>
+		                    <td style="text-align:center;">'.$estatus_pasantes.'</td>
+		                    <td  style="text-align:center;">'.$row2["empresa_nombre"].'</td>
+		                    <td style="text-align:center;">'.$row2["fecha_creacion"].'</td>
 		                    <td nowrap="nowrap">'.$row2["fecha_creacion"].'</td>
 		                    <td class="text-center" nowrap="nowrap">
-		                    	<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#personales1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Editar</button>
-		                    	<button type="button" class="btn btn-info" style="cursor:pointer;" data-toggle="modal" data-target="#personales1" onclick="editar1('.$row2["modelo_id"].','.$row2["usuario_id"].');">Permisos</button>
+		                    	<button type="button" class="btn btn-primary" style="cursor:pointer;" data-toggle="modal" data-target="#personales1" onclick="editar1('.$row2["id"].');">Editar</button>
+		                    	<button type="button" class="btn btn-info" style="cursor:pointer;" data-toggle="modal" data-target="#permisos1" onclick="editar1('.$row2["id"].');">VP</button>
+		                    	<button type="button" class="btn btn-success" style="cursor:pointer;" data-toggle="modal" data-target="#permisos2" onclick="editar1('.$row2["id"].');">AP</button>
 			';
-
-			if($row2["modelo_estatus"]==1){
-				$html .= '
-								<button type="button" class="btn btn-success" onclick="aceptar1('.$row2["usuario_id"].');">A</button>
-								<button type="button" class="btn btn-danger" onclick="rechazar1('.$row2["usuario_id"].');">R</button>
-				';
-			}else if($row2["modelo_estatus"]==2){
-				$html .= '
-								<button type="button" class="btn btn-danger" onclick="rechazar1('.$row2["usuario_id"].');">Rechazar</button>
-				';
-			}else if($row2["modelo_estatus"]==3){
-				$html .= '
-
-								<button type="button" class="btn btn-success" onclick="aceptar1('.$row2["usuario_id"].');">Aceptar</button>
-				';
-			}
 		    
 		    $html .= '		</td>
 		    			</tr>
@@ -490,6 +494,213 @@ if($condicion=='table1'){
 		"sql2"	=> $sql2,
 	];
 	echo json_encode($datos);
+}
+
+if($condicion=='consulta1'){
+	$id = $_POST["usuario_id"];
+	$html1 = '';
+
+	$sql1 = "SELECT us.nombre1 as nombre1, us.nombre2 as nombre2, us.apellido1 as apellido1, us.apellido2 as apellido2, us.documento_tipo as documento_tipo, us.documento_numero as documento_numero, us.correo_personal as correo, us.telefono as telefono, us.genero as genero, us.direccion as direccion, us.estatus_modelo as estatus_modelo, us.estatus_nomina as estatus_nomina, us.estatus_pasantes as estatus_pasantes, doct.nombre as documento_tipo_nombre, us.id_empresa as id_empresa FROM usuarios us  
+	INNER JOIN documento_tipo doct
+	ON doct.id = us.documento_tipo 
+	WHERE us.id = ".$id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+	while($row1 = mysqli_fetch_array($proceso1)) {
+		$nombre1 = $row1["nombre1"];
+		$nombre2 = $row1["nombre2"];
+		$apellido1 = $row1["apellido1"];
+		$apellido2 = $row1["apellido2"];
+		$documento_tipo = $row1["documento_tipo"];
+		$documento_numero = $row1["documento_numero"];
+		$documento_numero = $row1["documento_numero"];
+		$correo = $row1["correo"];
+		$telefono = $row1["telefono"];
+		$genero = $row1["genero"];
+		$direccion = $row1["direccion"];
+		$estatus_modelo = $row1["estatus_modelo"];
+		$estatus_nomina = $row1["estatus_nomina"];
+		$estatus_pasantes = $row1["estatus_pasantes"];
+		$documento_tipo_nombre = $row1["documento_tipo_nombre"];
+		$usuario_nombre = $nombre1." ".$nombre2." ".$apellido1." ".$apellido2;
+		$id_empresa = $row1["id_empresa"];
+
+		$sql2 = "SELECT msubus.id as msubus_id, msubus.estatus as msubus_estatus, msub.id as msub_id, msub.nombre as msub_nombre, msub.id_modulos as msub_id_modulos, msub.id_usuario_rol as msub_id_usuario_rol, msub.estatus as msub_estatus, mo.id as mo_id, mo.nombre as mo_nombre FROM modulos_sub_usuarios msubus 
+		INNER JOIN modulos_sub msub 
+		ON msub.id = msubus.id_modulos_sub 
+		INNER JOIN modulos mo 
+		ON mo.id = msub.id_modulos 
+		WHERE msubus.estatus = 1 and mo.estatus = 1 and msub.estatus = 1 and msubus.id_usuarios = ".$id;
+
+		$proceso2 = mysqli_query($conexion,$sql2);
+		$contador2 = mysqli_num_rows($proceso2);
+		if($contador2>=1){
+			while($row2 = mysqli_fetch_array($proceso2)) {
+				$msub_nombre = $row2["msub_nombre"];
+				$msub_id_usuario_rol = $row2["msub_id_usuario_rol"];
+				$msub_estatus = $row2["msub_estatus"];
+				$mo_nombre = $row2["mo_nombre"];
+
+				$html1 .= '
+					<div class="col-12">
+						<hr style="font-size:2px; background-color: black;">
+					</div>
+					<div class="col-4 form-group form-check">
+						<label style="font-weight: bold;">SubModulo</label>
+					</div>
+					<div class="col-4 form-group form-check">
+						<label style="font-weight: bold;">Rol</label>
+					</div>
+					<div class="col-4 form-group form-check">
+						<label style="font-weight: bold;">Modulo</label>
+					</div>
+					<div class="col-4 form-group form-check">
+						'.$msub_nombre.'
+					</div>
+					<div class="col-4 form-group form-check">
+						'.$msub_id_usuario_rol.'
+					</div>
+					<div class="col-4 form-group form-check">
+						'.$mo_nombre.'
+					</div>
+				';
+			}
+		}
+	}
+
+	$datos = [
+		"estatus"			=> "ok",
+		"sql1" 				=> $sql1,
+		"nombre1"			=> $nombre1,
+		"nombre2"			=> $nombre2,
+		"apellido1"			=> $apellido1,
+		"apellido2"			=> $apellido2,
+		"usuario_nombre"	=> $usuario_nombre,
+		"documento_tipo"	=> $documento_tipo,
+		"documento_numero"	=> $documento_numero,
+		"correo"			=> $correo,
+		"telefono"			=> $telefono,
+		"genero"			=> $genero,
+		"direccion"			=> $direccion,
+		"estatus_modelo"	=> $estatus_modelo,
+		"estatus_nomina"	=> $estatus_nomina,
+		"estatus_pasantes"	=> $estatus_pasantes,
+		"documento_tipo_nombre"	=> $documento_tipo_nombre,
+		"html1"	=> $html1,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='editar1'){
+	$usuario_id = $_POST["usuario_id"];
+	$documento_tipo = $_POST["documento_tipo"];
+	$documento_numero = $_POST["documento_numero"];
+	$nombre1 = $_POST["nombre1"];
+	$nombre2 = $_POST["nombre2"];
+	$apellido1 = $_POST["apellido1"];
+	$apellido2 = $_POST["apellido2"];
+	$correo = $_POST["correo"];
+	$telefono = $_POST["telefono"];
+	$direccion = $_POST["direccion"];
+
+	$sql1 = "UPDATE usuarios SET documento_tipo = $documento_tipo, documento_numero = '$documento_numero', nombre1 = '$nombre1', nombre2 = '$nombre2', apellido1 = '$apellido1', apellido2 = '$apellido2', correo_personal = '$correo', telefono = '$telefono', direccion = '$direccion' WHERE id = ".$usuario_id;
+	$proceso1 = mysqli_query($conexion,$sql1);
+
+	$datos = [
+		"estatus"	=> "ok",
+		"sql1"		=> $sql1,
+		"msg"		=> "Se ha modificado exitosamente!",
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='permisos2_select'){
+	$value = $_POST["value"];
+	$select = $_POST["select"];
+	$html1 = '';
+	$html2 = '';
+	$html3 = '';
+
+	if($select=='1' and $value!=""){
+		$html1 .= '
+			<select class="form-control" id="permisos2_submodulo" name="permisos2_submodulo" onchange="permisos2_select(value,2);" required>
+				<option value="">Seleccione</option>
+		';
+		$sql1 = "SELECT * FROM modulos_sub WHERE estatus = 1 and id_modulos = ".$value;
+		$proceso1 = mysqli_query($conexion,$sql1);
+		while($row1 = mysqli_fetch_array($proceso1)) {
+			$submodulo_id = $row1["id"];
+			$submodulo_nombre = $row1["nombre"];
+			$html1 .= '
+				<option value="'.$submodulo_id.'">'.$submodulo_nombre.'</option>
+			';
+		}
+		$html1 .= '
+			</select>
+		';
+	}else if($select=='2' and $value!=""){
+		$html2 .= '
+			<select class="form-control" id="permisos2_multiple" name="permisos2_multiple" required>
+				<option value="">Seleccione</option>
+		';
+		$sql1 = "SELECT * FROM modulos_multiple WHERE estatus = 1 and id_sub_modulos = ".$value;
+		$proceso1 = mysqli_query($conexion,$sql1);
+		while($row1 = mysqli_fetch_array($proceso1)) {
+			$multiple_id = $row1["id"];
+			$multiple_nombre = $row1["nombre"];
+			$html2 .= '
+				<option value="'.$multiple_id.'">'.$multiple_nombre.'</option>
+			';
+		}
+		$html2 .= '
+			</select>
+		';
+	}
+
+	$datos = [
+		"estatus"	=> "ok",
+		"html1" => $html1,
+		"html2" => $html2,
+		"html3" => $html3,
+	];
+	echo json_encode($datos);
+}
+
+if($condicion=='agregar_permiso1'){
+	$usuario_id = $_POST["usuario_id"];
+	$modulo = $_POST["permisos2_modulo"];
+	$submodulo = $_POST["permisos2_submodulo"];
+	$multiple = $_POST["permisos2_multiple"];
+
+	$sql1 = "SELECT * FROM modulos_sub_usuarios WHERE id_usuarios = ".$usuario_id." and id_modulos_sub = ".$submodulo;
+	$proceso1 = mysqli_query($conexion,$sql1);
+	$contador1 = mysqli_num_rows($proceso1);
+
+	$sql2 = "SELECT * FROM modulos_multiple_usuarios WHERE id_usuarios = ".$usuario_id." and id_modulos_multiple = ".$multiple;
+	$proceso2 = mysqli_query($conexion,$sql2);
+	$contador2 = mysqli_num_rows($proceso2);
+
+	if($contador2>=1){
+		$datos = [
+			"estatus"	=> "error",
+			"sql2"		=> $sql2,
+			"msg"		=> "Ya tenia el multiple vinculado!",
+		];
+		echo json_encode($datos);
+	}else{
+		if($contador1==0){
+			$sql3 = "INSERT INTO modulos_sub_usuarios (id_modulos_sub,id_usuarios,estatus,responsable,fecha_creacion) VALUES ($submodulo,$usuario_id,1,$responsable,'$fecha_creacion')";
+			$proceso3 = mysqli_query($conexion,$sql3);
+		}
+		$sql3 = "INSERT INTO modulos_multiple_usuarios (id_usuarios,id_modulos_multiple,responsable,fecha_creacion) VALUES ($usuario_id,$multiple,$responsable,'$fecha_creacion')";
+		$proceso3 = mysqli_query($conexion,$sql3);
+		$datos = [
+			"estatus"	=> "ok",
+			"sql2"		=> $sql2,
+			"sql3"		=> $sql3,
+			"msg"		=> "Agregado Permiso exitosamente!",
+		];
+		echo json_encode($datos);
+	}
 }
 
 

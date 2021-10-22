@@ -711,26 +711,51 @@ CREATE TABLE modelos_cuentas (
 	PRIMARY KEY (id)
 ); ALTER TABLE modelos_cuentas CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
+DROP TABLE IF EXISTS monedas;
+CREATE TABLE monedas (
+	id INT AUTO_INCREMENT,
+	nombre VARCHAR(250) NOT NULL,
+	conversion FLOAT(11,2) NOT NULL,
+	formula1 INT NOT NULL,
+	formula2 INT NOT NULL,
+	id_empresa INT NOT NULL,
+	PRIMARY KEY (id)
+); ALTER TABLE monedas CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
+
+INSERT INTO monedas (nombre,conversion,formula1,formula2,id_empresa) VALUES 
+('Dolar',20,0,0,1);
 
 DROP TABLE IF EXISTS paginas;
 CREATE TABLE paginas (
 	id INT AUTO_INCREMENT,
 	nombre VARCHAR(250) NOT NULL,
-	tasa FLOAT (11,2) NOT NULL,
-	url VARCHAR(250) NOT NULL,
-	moneda VARCHAR(250) NOT NULL,
+	usuario_pagos INT NOT NULL,
+	usuario_cuenta INT NOT NULL,
+	url INT NOT NULL,
+	correo INT NOT NULL,
+	clave INT DEFAULT 1,
+	cuentas_maximas INT NOT NULL,
+	id_moneda INT NOT NULL,
+	guion_bajo INT NOT NULL,
+	id_empresa INT NOT NULL,
+	estatus INT DEFAULT 1,
 	PRIMARY KEY (id)
 ); ALTER TABLE paginas CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;
 
-INSERT INTO paginas (nombre,tasa,url,moneda) VALUES 
-('Chaturbate', 0.05, 'https://chaturbate.com/','Dolar'),
-('Myfreecams', 0.05, 'https://www.myfreecams.com/','Dolar'),
-('Camsoda', 0.05, 'https://www.camsoda.com/','Dolar'),
-('BongaCams', 0.02, 'https://es.bongacams.com/','Dolar'),
-('Stripchat', 0.05, 'https://stripchat.com/trans','Dolar'),
-('Cam4', 0.1, 'https://www.cam4.com/','Dolar'),
-('Streamatemodels', 1, 'https://www.streamatemodels.com/','Dolar'),
-('Flirt4free', 0.02, 'https://www.flirt4free.com/','Dolar'),
-('Livejasmin', 1, 'https://www.livejasmin.com/','Dolar'),
-('Imlive', 1, 'https://imlive.com/','Dolar'),
-('Xlovecam', 1.18, 'https://www.xlovecam.com/','Dolar');
+INSERT INTO paginas (nombre,usuario_pagos,usuario_cuenta,url,correo,clave,cuentas_maximas,id_moneda,guion_bajo,id_empresa) VALUES 
+('Chaturbate', 1,0,1,0,0,1,3,1,1,1);
+
+DROP TABLE IF EXISTS cuentas_usuarios;
+CREATE TABLE cuentas_usuarios (
+	id INT AUTO_INCREMENT,
+	id_usuario INT NOT NULL,
+	id_pagina INT NOT NULL,
+	usuario_pagos VARCHAR(250) NOT NULL,
+	usuario_cuenta VARCHAR(250) NOT NULL,
+	url VARCHAR(250) NOT NULL,
+	correo VARCHAR(250) NOT NULL,
+	clave VARCHAR(250) NOT NULL,
+	moneda VARCHAR(250) NOT NULL,
+	estatus INT DEFAULT(1) NOT NULL,
+	PRIMARY KEY (id)
+); ALTER TABLE cuentas_usuarios CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;

@@ -40,6 +40,10 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 <div class="container mt-3">
 	<div class="row">
 		<input type="hidden" name="datatables" id="datatables" data-pagina="1" data-consultasporpagina="10" data-filtrado="" data-sede="" data-estatus="">
+		<div class="col-2">
+			<br>
+			<button type="button" class="btn btn-success mt-2" data-toggle="modal" data-target="#agregar1">Agregar Pagina</button>
+		</div>
 		<div class="col-3 form-group form-check">
 			<label for="consultasporpagina" style="color:black; font-weight: bold;">Consultas por Página</label>
 			<select class="form-control" id="consultasporpagina" name="consultasporpagina">
@@ -55,14 +59,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 			<label for="buscarfiltro" style="color:black; font-weight: bold;">Buscar</label>
 			<input type="text" class="form-control" id="buscarfiltro" name="buscarfiltro">
 		</div>
-		<div class="col-2 form-group form-check">
-			<label for="m_estatus" style="color:black; font-weight: bold;">Estatus</label>
-			<select class="form-control" id="m_estatus" name="m_estatus">
-				<option value="">Todos</option>
-				<option value="2">Activos</option>
-				<option value="3">Inactivos</option>
-			</select>
-		</div>
+		<input type="hidden" id="m_estatus" name="m_estatus" value="">
 		<div class="col-3 form-group form-check">
 			<label for="consultaporempresa" style="color:black; font-weight: bold;">Consultas por Empresa</label>
 			<select class="form-control" id="consultaporempresa" name="consultaporempresa">
@@ -89,15 +86,16 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 
 <!------------------------>
 <input type="hidden" name="usuario_id" id="usuario_id">
+<input type="hidden" name="pagina_id" id="pagina_id">
 <!------------------------>
 
-<!-- Modal personales1 -->
-	<div class="modal fade" id="personales1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+<!-- Modal agregar1 -->
+	<div class="modal fade" id="agregar1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
 		<div class="modal-dialog" role="document">
-			<form action="#" method="POST" id="personales1_form" style="">
+			<form action="#" method="POST" id="agregar1_form" style="">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">MODIFICAR DATOS</h5>
+						<h5 class="modal-title" id="exampleModalLabel">AGREGAR PAGINAS</h5>
 						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -105,132 +103,97 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 					<div class="modal-body">
 					  <div class="row">
 					  	<div class="col-12 form-group form-check">
-							  <label for="personales1_documento_tipo" style="font-weight: bold;">Documento Tipo</label>
-							  <select class="form-control" name="personales1_documento_tipo" id="personales1_documento_tipo" required>
+							  <label for="agregar1_nombre" style="font-weight: bold;">Nombre</label>
+							  <input type="text" id="agregar1_nombre" name="agregar1_nombre" minlength="4" maxlength="15" class="form-control" required>
+						  </div>
+						  <div class="col-12 form-group form-check">
+							  <label for="agregar1_usuario_pago" style="font-weight: bold;">Usuario Pago</label>
+							  <select class="form-control" id="agregar1_usuario_pago" name="agregar1_usuario_pago" required>
+							  	<option value="">Seleccione</option>
+							  	<option value="1">Si</option>
+							  	<option value="0">No</option>
+							  </select>
+						  </div>
+						  <div class="col-12 form-group form-check">
+							  <label for="agregar1_usuario_cuenta" style="font-weight: bold;">Usuario Cuenta</label>
+							  <select class="form-control" id="agregar1_usuario_cuenta" name="agregar1_usuario_cuenta" required>
+							  	<option value="">Seleccione</option>
+							  	<option value="1">Si</option>
+							  	<option value="0">No</option>
+							  </select>
+						  </div>
+						  <div class="col-12 form-group form-check">
+							  <label for="agregar1_url" style="font-weight: bold;">URL</label>
+							  <select class="form-control" id="agregar1_url" name="agregar1_url" required>
+							  	<option value="">Seleccione</option>
+							  	<option value="1">Si</option>
+							  	<option value="0">No</option>
+							  </select>
+						  </div>
+						  <div class="col-12 form-group form-check">
+							  <label for="agregar1_correo" style="font-weight: bold;">Correo</label>
+							  <select class="form-control" id="agregar1_correo" name="agregar1_correo" required>
+							  	<option value="">Seleccione</option>
+							  	<option value="1">Si</option>
+							  	<option value="0">No</option>
+							  </select>
+						  </div>
+						  <div class="col-12 form-group form-check">
+							  <label for="agregar1_cuentas_maximas" style="font-weight: bold;">Cuentas Maximas</label>
+							  <select class="form-control" id="agregar1_cuentas_maximas" name="agregar1_cuentas_maximas" required>
+							  	<option value="">Seleccione</option>
+							  	<option value="1">1</option>
+							  	<option value="2">2</option>
+							  	<option value="3">3</option>
+							  </select>
+						  </div>
+						  <div class="col-12 form-group form-check">
+							  <label for="agregar1_guion_bajo" style="font-weight: bold;">Guion Bajo</label>
+							  <select class="form-control" id="agregar1_guion_bajo" name="agregar1_guion_bajo" required>
+							  	<option value="">Seleccione</option>
+							  	<option value="1">Si</option>
+							  	<option value="0">No</option>
+							  </select>
+						  </div>
+					  	<div class="col-12 form-group form-check">
+							  <label for="agregar1_id_moneda" style="font-weight: bold;">Moneda</label>
+							  <select class="form-control" name="agregar1_id_moneda" id="agregar1_id_moneda" required>
+							  	<option value="">Seleccione</option>
 								  <?php
-								    $sql3 = "SELECT * FROM documento_tipo";
+								    $sql3 = "SELECT * FROM monedas WHERE id_empresa = ".$_SESSION["camaleonapp_empresa"];
 								    $proceso3 = mysqli_query($conexion,$sql3);
 										while($row3 = mysqli_fetch_array($proceso3)) {
-											$documento_tipo_id = $row3["id"];
-											$documento_tipo_nombre = $row3["nombre"];
+											$moneda_id = $row3["id"];
+											$moneda_nombre = $row3["nombre"];
 											echo '
-												<option value="'.$documento_tipo_id.'">'.$documento_tipo_nombre.'</option>
+												<option value="'.$moneda_id.'">'.$moneda_nombre.'</option>
 											';
 										}
 									?>
 								</select>
 						  </div>
 						  <div class="col-12 form-group form-check">
-							  <label for="personales1_documento_numero" style="font-weight: bold;">Documento Numero</label>
-							  <input type="text" id="personales1_documento_numero" name="personales1_documento_numero" class="form-control" required>
-								</select>
-						  </div>
-						  <div class="col-12 form-group form-check">
-							  <label for="personales1_nombre1" style="font-weight: bold;">Primer Nombre</label>
-							  <input type="text" id="personales1_nombre1" name="personales1_nombre1" class="form-control" required>
-								</select>
-						  </div>
-						  <div class="col-12 form-group form-check">
-							  <label for="personales1_nombre2" style="font-weight: bold;">Segundo Nombre</label>
-							  <input type="text" id="personales1_nombre2" name="personales1_nombre2" class="form-control">
-								</select>
-						  </div>
-						  <div class="col-12 form-group form-check">
-							  <label for="personales1_apellido1" style="font-weight: bold;">Primer Apellido</label>
-							  <input type="text" id="personales1_apellido1" name="personales1_apellido1" class="form-control" required>
-								</select>
-						  </div>
-						  <div class="col-12 form-group form-check">
-							  <label for="personales1_apellido2" style="font-weight: bold;">Segundo Apellido</label>
-							  <input type="text" id="personales1_apellido2" name="personales1_apellido2" class="form-control" required>
-								</select>
-						  </div>
-						  <div class="col-12 form-group form-check">
-							  <label for="personales1_correo" style="font-weight: bold;">Correo Personal</label>
-							  <input type="text" id="personales1_correo" name="personales1_correo" class="form-control" required>
-								</select>
-						  </div>
-						  <div class="col-12 form-group form-check">
-							  <label for="personales1_telefono" style="font-weight: bold;">Telefono</label>
-							  <input type="number" id="personales1_telefono" name="personales1_telefono" class="form-control" required>
-								</select>
-						  </div>
-						  <div class="col-12 form-group form-check">
-							  <label for="personales1_direccion" style="font-weight: bold;">Correo Dirección</label>
-							  <textarea class="form-control" id="personales1_direccion" name="personales1_direccion" required></textarea>
+							  <label for="agregar1_empresa" style="font-weight: bold;">Empresa</label>
+							  <select class="form-control" name="agregar1_empresa" id="agregar1_empresa" required>
+							  	<option value="">Seleccione</option>
+								  <?php
+								    $sql4 = "SELECT * FROM empresas";
+								    $proceso4 = mysqli_query($conexion,$sql4);
+										while($row4 = mysqli_fetch_array($proceso4)) {
+											$empresa_id = $row4["id"];
+											$empresa_nombre = $row4["nombre"];
+											echo '
+												<option value="'.$empresa_id.'">'.$empresa_nombre.'</option>
+											';
+										}
+									?>
 								</select>
 						  </div>
 						</div>
 					</div>
 					<div class="modal-footer">
 				    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				    <button type="submit" class="btn btn-success" id="submit_personales1">Guardar</button>
-			    </div>
-			  </div>
-		  </form>
-	  </div>
-	</div>
-<!---------------------------------------->
-
-<!-- Modal permisos1 -->
-	<div class="modal fade" id="permisos1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<form action="#" method="POST" id="permisos1_form" style="">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">MODIFICAR PERMISOS</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-					  <div class="row" id="permisos1_html1"></div>
-					</div>
-					<div class="modal-footer">
-				    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				    <button type="submit" class="btn btn-success" id="submit_permisos1">Guardar</button>
-			    </div>
-			  </div>
-		  </form>
-	  </div>
-	</div>
-<!---------------------------------------->
-
-<!-- Modal permisos2 -->
-	<div class="modal fade" id="permisos2" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<form action="#" method="POST" id="permisos2_form" style="">
-				<div class="modal-content">
-					<div class="modal-header">
-						<h5 class="modal-title" id="exampleModalLabel">AGREGAR PERMISOS</h5>
-						<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-							<span aria-hidden="true">&times;</span>
-						</button>
-					</div>
-					<div class="modal-body">
-					  <div class="col-12 form-group form-check">
-							<label for="permisos2_modulo" style="font-weight: bold;">Modulo</label>
-							<select class="form-control" name="permisos2_modulo" id="permisos2_modulo" onchange="permisos2_select(value,1);" required>
-								<option value="">Seleccione</option>
-								<?php
-									$sql3 = "SELECT * FROM modulos WHERE estatus = 1 ORDER BY orden ASC";
-									$proceso3 = mysqli_query($conexion,$sql3);
-									while($row3 = mysqli_fetch_array($proceso3)) {
-										$documento_tipo_id = $row3["id"];
-										$documento_tipo_nombre = $row3["nombre"];
-										echo '
-											<option value="'.$documento_tipo_id.'">'.$documento_tipo_nombre.'</option>
-										';
-									}
-								?>
-							</select>
-						</div>
-						<div class="col-12 form-group form-check" id="permisos2_html1"></div>
-						<div class="col-12 form-group form-check" id="permisos2_html2"></div>
-					</div>
-					<div class="modal-footer">
-				    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-				    <button type="submit" class="btn btn-success" id="submit_permisos2">Guardar</button>
+				    <button type="submit" class="btn btn-success" id="submit_agregar1">Guardar</button>
 			    </div>
 			  </div>
 		  </form>
@@ -276,7 +239,7 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 
 		$.ajax({
 			type: 'POST',
-			url: '../script/crud_usuarios.php',
+			url: '../script/crud_paginas.php',
 			dataType: "JSON",
 			data: {
 				"pagina": pagina,
@@ -350,41 +313,49 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 		});
 	}
 
-	$("#personales1_form").on("submit", function(e){
+	$("#agregar1_form").on("submit", function(e){
 		e.preventDefault();
-		var usuario_id = $('#usuario_id').val();
-		var documento_tipo = $('#personales1_documento_tipo').val();
-		var documento_numero = $('#personales1_documento_numero').val();
-		var nombre1 = $('#personales1_nombre1').val();
-		var nombre2 = $('#personales1_nombre2').val();
-		var apellido1 = $('#personales1_apellido1').val();
-		var apellido2 = $('#personales1_apellido2').val();
-		var correo = $('#personales1_correo').val();
-		var telefono = $('#personales1_telefono').val();
-		var direccion = $('#personales1_direccion').val();
+		var agregar1_nombre = $('#agregar1_nombre').val();
+		var agregar1_usuario_pago = $('#agregar1_usuario_pago').val();
+		var agregar1_usuario_cuenta = $('#agregar1_usuario_cuenta').val();
+		var agregar1_url = $('#agregar1_url').val();
+		var agregar1_correo = $('#agregar1_correo').val();
+		var agregar1_cuentas_maximas = $('#agregar1_cuentas_maximas').val();
+		var agregar1_guion_bajo = $('#agregar1_guion_bajo').val();
+		var agregar1_id_moneda = $('#agregar1_id_moneda').val();
+		var agregar1_empresa = $('#agregar1_empresa').val();
 
 		$.ajax({
 			type: 'POST',
-			url: '../script/crud_usuarios.php',
+			url: '../script/crud_paginas.php',
 			dataType: "JSON",
 			data: {
-				"usuario_id": usuario_id,
-				"documento_tipo": documento_tipo,
-				"documento_numero": documento_numero,
-				"nombre1": nombre1,
-				"nombre2": nombre2,
-				"apellido1": apellido1,
-				"apellido2": apellido2,
-				"correo": correo,
-				"telefono": telefono,
-				"direccion": direccion,
-				"condicion": "editar1",
+				"nombre": agregar1_nombre,
+				"usuario_pago": agregar1_usuario_pago,
+				"usuario_cuenta": agregar1_usuario_cuenta,
+				"url": agregar1_url,
+				"correo": agregar1_correo,
+				"cuentas_maximas": agregar1_cuentas_maximas,
+				"guion_bajo": agregar1_guion_bajo,
+				"id_moneda": agregar1_id_moneda,
+				"empresa": agregar1_empresa,
+				"condicion": "agregar1",
 			},
 
 			success: function(respuesta) {
-				//console.log(respuesta);
+				console.log(respuesta);
 
 				if(respuesta["estatus"]=="ok"){
+					$('#agregar1_nombre').val("");
+					$('#agregar1_usuario_pago').val("");
+					$('#agregar1_usuario_cuenta').val("");
+					$('#agregar1_url').val("");
+					$('#agregar1_correo').val("");
+					$('#agregar1_cuentas_maximas').val("");
+					$('#agregar1_guion_bajo').val("");
+					$('#agregar1_id_moneda').val("");
+					$('#agregar1_empresa').val("");
+
 					Swal.fire({
 						title: 'Correcto!',
 						text: respuesta["msg"],
@@ -406,34 +377,6 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 			}
 		});
 	});
-
-	function permisos2_select(value,select){
-		$.ajax({
-			type: 'POST',
-			url: '../script/crud_usuarios.php',
-			dataType: "JSON",
-			data: {
-				"value": value,
-				"select": select,
-				"condicion": "permisos2_select",
-			},
-
-			success: function(respuesta) {
-				console.log(respuesta);
-				if(respuesta["estatus"]=="ok"){
-					if(select=='1'){
-						$('#permisos2_html1').html(respuesta["html1"]);
-						$('#permisos2_html2').html("");
-					}else if(select=='2')
-					$('#permisos2_html2').html(respuesta["html2"]);
-				}
-			},
-
-			error: function(respuesta) {
-				console.log(respuesta['responseText']);
-			}
-		});
-	}
 
 	$("#permisos2_form").on("submit", function(e){
 		e.preventDefault();
@@ -480,5 +423,72 @@ while($rowub2 = mysqli_fetch_array($procesoub2)) {
 		});
 	});
 
+	function desactivar1(pagina_id){
+		$.ajax({
+			type: 'POST',
+			url: '../script/crud_paginas.php',
+			dataType: "JSON",
+			data: {
+				"pagina_id": pagina_id,
+				"condicion": "desactivar1",
+			},
+
+			success: function(respuesta) {
+				console.log(respuesta);
+				if(respuesta["estatus"]=="ok"){
+					Swal.fire({
+						title: 'Correcto!',
+						text: respuesta["msg"],
+						icon: 'success',
+					});
+
+				}else if(respuesta["estatus"]=="error"){
+					Swal.fire({
+						title: 'Error',
+						text: respuesta["msg"],
+						icon: 'error',
+					})
+				}
+			},
+
+			error: function(respuesta) {
+				console.log(respuesta['responseText']);
+			}
+		});
+	}
+
+	function activar1(pagina_id){
+		$.ajax({
+			type: 'POST',
+			url: '../script/crud_paginas.php',
+			dataType: "JSON",
+			data: {
+				"pagina_id": pagina_id,
+				"condicion": "activar1",
+			},
+
+			success: function(respuesta) {
+				console.log(respuesta);
+				if(respuesta["estatus"]=="ok"){
+					Swal.fire({
+						title: 'Correcto!',
+						text: respuesta["msg"],
+						icon: 'success',
+					});
+
+				}else if(respuesta["estatus"]=="error"){
+					Swal.fire({
+						title: 'Error',
+						text: respuesta["msg"],
+						icon: 'error',
+					})
+				}
+			},
+
+			error: function(respuesta) {
+				console.log(respuesta['responseText']);
+			}
+		});
+	}
 
 </script>
